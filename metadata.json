@@ -1,0 +1,6 @@
+{
+  "name": "saloncapp ERP",
+  "description": "Mobile hierarchy ERP for salon franchises with role-specific KPI cards, royalty/collateral overdue tracking, dual-way smart broadcast, and severity-gated escalations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -11,6 +11,10 @@ import {
   TicketSeverity,
   TicketCategory,
   BroadcastScope,
+  HrDepartmentStatus,
+  AccountingDepartmentStatus,
+  TrainingDepartmentStatus,
+  MarketingDepartmentStatus,
 } from '../types/erp';
 import {
   USER_PROFILES,
@@ -20,6 +24,10 @@ import {
   INITIAL_TICKETS,
   INITIAL_BROADCASTS,
   INITIAL_NOTIFICATIONS,
+  INITIAL_HR_STATUS,
+  INITIAL_ACCOUNTING_STATUS,
+  INITIAL_TRAINING_STATUS,
+  INITIAL_MARKETING_STATUS,
 } from '../data/mockData';
 
 interface ErpContextType {
@@ -39,6 +47,12 @@ interface ErpContextType {
   broadcasts: BroadcastMessage[];
   notifications: SystemNotification[];
 
+  // Department Statuses
+  hrStatus: HrDepartmentStatus;
+  accountingStatus: AccountingDepartmentStatus;
+  trainingStatus: TrainingDepartmentStatus;
+  marketingStatus: MarketingDepartmentStatus;
+
   // Role-filtered slices
   scopedStores: Store[];
   scopedClusters: Cluster[];
@@ -46,6 +60,7 @@ interface ErpContextType {
   scopedTickets: Ticket[];
   scopedBroadcasts: BroadcastMessage[];
   unreadNotificationCount: number;
+  isHqRole: boolean;
 
   // Actions
   createTicket: (data: {
@@ -62,7 +77,16 @@ interface ErpContextType {
     title: string;
     content: string;
     priority: 'normal' | 'urgent' | 'critical';
-    category: 'Operational Notice' | 'Policy Update' | 'Overdue Escalation' | 'Emergency' | 'Target Drive';
+    category:
+      | 'Operational Notice'
+      | 'Policy Update'
+      | 'Overdue Escalation'
+      | 'Emergency'
+      | 'Target Drive'
+      | 'HR & Staffing'
+      | 'Accounting & Billing'
+      | 'Training & Academy'
+      | 'Marketing & Campaign';
     scope: BroadcastScope;
     targetRegionIds?: string[];
     targetClusterIds?: string[];
@@ -72,6 +96,11 @@ interface ErpContextType {
   sendStoreReminder: (storeId: string, message: string) => void;
   markNotificationRead: (id: string) => void;
   markAllNotificationsRead: () => void;
+
+  // Department Specific Quick Actions
+  approveStaffTransfer: (storeName: string, role: string) => void;
+  scheduleTrainingAudit: (title: string) => void;
+  launchMarketingPromo: (name: string, discount: string) => void;
 }
 
 const ErpContext = createContext<ErpContextType | undefined>(undefined);
@@ -88,7 +117,22 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [broadcasts, setBroadcasts] = useState<BroadcastMessage[]>(INITIAL_BROADCASTS);
   const [notifications, setNotifications] = useState<SystemNotification[]>(INITIAL_NOTIFICATIONS);
 
+  // Department state
+  const [hrStatus, setHrStatus] = useState<HrDepartmentStatus>(INITIAL_HR_STATUS);
+  const [accountingStatus, setAccountingStatus] = useState<AccountingDepartmentStatus>(INITIAL_ACCOUNTING_STATUS);
+  const [trainingStatus, setTrainingStatus] = useState<TrainingDepartmentStatus>(INITIAL_TRAINING_STATUS);
+  const [marketingStatus, setMarketingStatus] = useState<MarketingDepartmentStatus>(INITIAL_MARKETING_STATUS);
+
   const currentUser = USER_PROFILES[currentRole];
+  const isHqRole = useMemo(() => {
+    return [
+      'business_head',
+      'hr_head',
+      'accounting_head',
+      'training_head',
+      'marketing_head',
+    ].includes(currentRole);
+  }, [currentRole]);
 
   // Helper to re-sum clusters and regions when store overdues change
   const recalculateAggregates = (updatedStores: Store[]) => {
@@ -125,7 +169,7 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Scoped views based on hierarchy rules
   const scopedStores = useMemo(() => {
-    if (currentRole === 'business_head') return stores;
+    if (isHqRole) return stores;
     if (currentRole === 'region_manager') {
       return stores.filter(s => s.regionId === currentUser.regionId);
     }
@@ -134,10 +178,10 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
     // Store manager: only their own store
     return stores.filter(s => s.id === currentUser.storeId);
-  }, [currentRole, currentUser, stores]);
+  }, [isHqRole, currentRole, currentUser, stores]);
 
   const scopedClusters = useMemo(() => {
-    if (currentRole === 'business_head') return clusters;
+    if (isHqRole) return clusters;
     if (currentRole === 'region_manager') {
       return clusters.filter(c => c.regionId === currentUser.regionId);
     }
@@ -146,29 +190,40 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
     // Store manager: their cluster
     return clusters.filter(c => c.id === currentUser.clusterId);
-  }, [currentRole, currentUser, clusters]);
+  }, [isHqRole, currentRole, currentUser, clusters]);
 
   const scopedRegions = useMemo(() => {
-    if (currentRole === 'business_head') return regions;
+    if (isHqRole) return regions;
     return regions.filter(r => r.id === currentUser.regionId);
-  }, [currentRole, currentUser, regions]);
+  }, [isHqRole, currentUser, regions]);
 
-  // Scoped tickets based on hierarchy & severity routing rules
+  // Scoped tickets based on hierarchy & departmental priority
   const scopedTickets = useMemo(() => {
     if (currentRole === 'business_head') {
-      // Business Head sees:
-      // 1. Direct High/Critical escalations
-      // 2. Tickets escalated to pending_bh
-      // 3. Overall historical archive
       return tickets;
     }
+    if (currentRole === 'hr_head') {
+      // Prioritize staff & HR issues, but allow viewing all
+      return [...tickets].sort((a, b) => (a.category === 'Staff & Stylist Shortage' ? -1 : 1));
+    }
+    if (currentRole === 'accounting_head') {
+      // Prioritize billing & royalty issues
+      return [...tickets].sort((a, b) =>
+        a.category === 'Royalty & Billing' || a.category === 'Collateral Recovery' ? -1 : 1
+      );
+    }
+    if (currentRole === 'training_head') {
+      return [...tickets].sort((a, b) =>
+        a.category === 'Equipment & AC Breakdown' || a.category === 'Franchise Compliance' ? -1 : 1
+      );
+    }
+    if (currentRole === 'marketing_head') {
+      return [...tickets].sort((a, b) => (a.category === 'Customer Dispute' ? -1 : 1));
+    }
     if (currentRole === 'region_manager') {
-      // Region manager sees tickets in their region:
-      // Includes direct High/Critical (where they are CC'd), tickets escalated to pending_region, etc.
       return tickets.filter(t => t.regionId === currentUser.regionId);
     }
     if (currentRole === 'cluster_manager') {
-      // Cluster manager sees tickets in their cluster
       return tickets.filter(t => t.clusterId === currentUser.clusterId);
     }
     // Store manager sees tickets for their store
@@ -179,11 +234,10 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const scopedBroadcasts = useMemo(() => {
     return broadcasts.filter(b => {
       if (b.scope === 'all') return true;
-      if (currentRole === 'business_head') return true;
+      if (isHqRole) return true;
 
       if (currentRole === 'region_manager') {
         if (b.scope === 'regions' && b.targetRegionIds?.includes(currentUser.regionId || '')) return true;
-        // Region manager also sees broadcasts sent to their clusters/stores
         return true;
       }
 
@@ -199,12 +253,12 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (b.scope === 'regions' && b.targetRegionIds?.includes(currentUser.regionId || '')) return true;
       return false;
     });
-  }, [broadcasts, currentRole, currentUser]);
+  }, [broadcasts, isHqRole, currentRole, currentUser]);
 
   const unreadNotificationCount = useMemo(() => {
     return notifications.filter(n => {
       const roleMatch = n.recipientRoles.includes(currentRole);
-      if (!roleMatch) return false;
+      if (!roleMatch && !isHqRole) return false;
       if (n.targetScope?.regionId && currentUser.regionId && n.targetScope.regionId !== currentUser.regionId) {
         return false;
       }
@@ -213,7 +267,7 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
       return !n.isRead;
     }).length;
-  }, [notifications, currentRole, currentUser]);
+  }, [notifications, currentRole, isHqRole, currentUser]);
 
   // CREATE TICKET (with severity restriction & notification rule)
   const createTicket = (data: {
@@ -467,7 +521,16 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     title: string;
     content: string;
     priority: 'normal' | 'urgent' | 'critical';
-    category: 'Operational Notice' | 'Policy Update' | 'Overdue Escalation' | 'Emergency' | 'Target Drive';
+    category:
+      | 'Operational Notice'
+      | 'Policy Update'
+      | 'Overdue Escalation'
+      | 'Emergency'
+      | 'Target Drive'
+      | 'HR & Staffing'
+      | 'Accounting & Billing'
+      | 'Training & Academy'
+      | 'Marketing & Campaign';
     scope: BroadcastScope;
     targetRegionIds?: string[];
     targetClusterIds?: string[];
@@ -587,6 +650,85 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     ]);
   };
 
+  // DEPARTMENT SPECIFIC ACTIONS
+  const approveStaffTransfer = (storeName: string, role: string) => {
+    setHrStatus(prev => ({
+      ...prev,
+      pendingTransfersCount: Math.max(0, prev.pendingTransfersCount - 1),
+      recentShortages: prev.recentShortages.filter(s => s.storeName !== storeName),
+    }));
+
+    setNotifications(prev => [
+      {
+        id: `notif_${Date.now()}`,
+        recipientRoles: ['store_manager', 'cluster_manager', 'region_manager'],
+        title: `👥 Staff Transfer Approved by HR`,
+        message: `${role} allocation approved for ${storeName} by Priyanka Sen (VP HR).`,
+        type: 'ticket_approved',
+        timestamp: new Date().toISOString(),
+        isRead: false,
+      },
+      ...prev,
+    ]);
+  };
+
+  const scheduleTrainingAudit = (title: string) => {
+    const newWs = {
+      id: `ws_${Date.now()}`,
+      title,
+      date: 'Next Tuesday, 11:00 AM',
+      registeredCount: 18,
+      leadTrainer: 'Dr. Tanya Kapoor',
+    };
+    setTrainingStatus(prev => ({
+      ...prev,
+      upcomingWorkshopsCount: prev.upcomingWorkshopsCount + 1,
+      upcomingWorkshops: [newWs, ...prev.upcomingWorkshops],
+    }));
+
+    setNotifications(prev => [
+      {
+        id: `notif_${Date.now()}`,
+        recipientRoles: ['cluster_manager', 'store_manager'],
+        title: `🎓 New Academy Workshop Scheduled`,
+        message: `Dr. Tanya Kapoor scheduled "${title}". Register store stylists on ERP.`,
+        type: 'broadcast',
+        timestamp: new Date().toISOString(),
+        isRead: false,
+      },
+      ...prev,
+    ]);
+  };
+
+  const launchMarketingPromo = (name: string, discount: string) => {
+    const newPromo = {
+      id: `pr_${Date.now()}`,
+      name,
+      discount,
+      redemptions: 45,
+      activeTill: 'End of Month',
+    };
+    setMarketingStatus(prev => ({
+      ...prev,
+      activeCampaignsCount: prev.activeCampaignsCount + 1,
+      totalCampaignLeads: prev.totalCampaignLeads + 120,
+      topPromotions: [newPromo, ...prev.topPromotions],
+    }));
+
+    setNotifications(prev => [
+      {
+        id: `notif_${Date.now()}`,
+        recipientRoles: ['region_manager', 'cluster_manager', 'store_manager'],
+        title: `📢 New Marketing Campaign Dispatched`,
+        message: `Campaign "${name}" (${discount}) activated across outlets by Aditya Mathur.`,
+        type: 'broadcast',
+        timestamp: new Date().toISOString(),
+        isRead: false,
+      },
+      ...prev,
+    ]);
+  };
+
   const markNotificationRead = (id: string) => {
     setNotifications(prev => prev.map(n => (n.id === id ? { ...n, isRead: true } : n)));
   };
@@ -616,12 +758,17 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         tickets,
         broadcasts,
         notifications,
+        hrStatus,
+        accountingStatus,
+        trainingStatus,
+        marketingStatus,
         scopedStores,
         scopedClusters,
         scopedRegions,
         scopedTickets,
         scopedBroadcasts,
         unreadNotificationCount,
+        isHqRole,
         createTicket,
         approveTicket,
         rejectTicket,
@@ -632,6 +779,9 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         sendStoreReminder,
         markNotificationRead,
         markAllNotificationsRead,
+        approveStaffTransfer,
+        scheduleTrainingAudit,
+        launchMarketingPromo,
       }}
     >
       {children}

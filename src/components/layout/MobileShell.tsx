@@ -4,6 +4,10 @@ import { Header } from '../common/Header';
 import { RoleSwitcherBar } from '../common/RoleSwitcherBar';
 import { BottomNav } from '../common/BottomNav';
 import { BusinessHeadView } from '../views/BusinessHeadView';
+import { HrDepartmentView } from '../views/HrDepartmentView';
+import { AccountingDepartmentView } from '../views/AccountingDepartmentView';
+import { TrainingDepartmentView } from '../views/TrainingDepartmentView';
+import { MarketingDepartmentView } from '../views/MarketingDepartmentView';
 import { RegionManagerView } from '../views/RegionManagerView';
 import { ClusterManagerView } from '../views/ClusterManagerView';
 import { StoreManagerView } from '../views/StoreManagerView';
@@ -82,6 +86,32 @@ export const MobileShell: React.FC = () => {
           <BusinessHeadView
             onOpenApproveModal={handleOpenApproveModal}
             onOpenRejectModal={handleOpenRejectModal}
+            onOpenBroadcastModal={() => setIsBroadcastModalOpen(true)}
+          />
+        );
+      case 'hr_head':
+        return (
+          <HrDepartmentView
+            onOpenBroadcastModal={() => setIsBroadcastModalOpen(true)}
+            onOpenApproveModal={handleOpenApproveModal}
+            onOpenRejectModal={handleOpenRejectModal}
+          />
+        );
+      case 'accounting_head':
+        return (
+          <AccountingDepartmentView
+            onOpenBroadcastModal={() => setIsBroadcastModalOpen(true)}
+          />
+        );
+      case 'training_head':
+        return (
+          <TrainingDepartmentView
+            onOpenBroadcastModal={() => setIsBroadcastModalOpen(true)}
+          />
+        );
+      case 'marketing_head':
+        return (
+          <MarketingDepartmentView
             onOpenBroadcastModal={() => setIsBroadcastModalOpen(true)}
           />
         );

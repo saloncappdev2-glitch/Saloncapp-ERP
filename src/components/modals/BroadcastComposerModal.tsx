@@ -22,19 +22,29 @@ export const BroadcastComposerModal: React.FC<BroadcastComposerModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { currentRole, currentUser, regions, clusters, stores, sendBroadcast } = useErp();
+  const { currentRole, currentUser, regions, clusters, stores, isHqRole, sendBroadcast } = useErp();
+
+  const getDefaultCategory = () => {
+    switch (currentRole) {
+      case 'hr_head':
+        return 'HR & Staffing';
+      case 'accounting_head':
+        return 'Accounting & Billing';
+      case 'training_head':
+        return 'Training & Academy';
+      case 'marketing_head':
+        return 'Marketing & Campaign';
+      default:
+        return 'Operational Notice';
+    }
+  };
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [priority, setPriority] = useState<'normal' | 'urgent' | 'critical'>('urgent');
-  const [category, setCategory] = useState<
-    'Operational Notice' | 'Policy Update' | 'Overdue Escalation' | 'Emergency' | 'Target Drive'
-  >('Overdue Escalation');
+  const [category, setCategory] = useState<any>(getDefaultCategory());
 
   // Broadcast Scope selector
-  // Business Head: 'all' | 'regions' | 'clusters' | 'stores'
-  // Region Manager: 'all' (all in region) | 'clusters' | 'stores'
-  // Cluster Manager: 'all' (all in cluster) | 'stores'
   const [scope, setScope] = useState<BroadcastScope>('all');
   const [selectedRegionIds, setSelectedRegionIds] = useState<string[]>([]);
   const [selectedClusterIds, setSelectedClusterIds] = useState<string[]>([]);
@@ -48,12 +58,12 @@ export const BroadcastComposerModal: React.FC<BroadcastComposerModalProps> = ({
   // Filter selectable options by hierarchy
   const availableRegions = regions;
   const availableClusters =
-    currentRole === 'business_head'
+    isHqRole
       ? clusters
       : clusters.filter(c => c.regionId === currentUser.regionId);
 
   const availableStores =
-    currentRole === 'business_head'
+    isHqRole
       ? stores
       : currentRole === 'region_manager'
       ? stores.filter(s => s.regionId === currentUser.regionId)
@@ -62,7 +72,7 @@ export const BroadcastComposerModal: React.FC<BroadcastComposerModalProps> = ({
   // Compute live recipient estimate
   const getRecipientSummary = () => {
     if (scope === 'all') {
-      if (currentRole === 'business_head') return `All ${stores.length} Outlets Nationwide (3 Regions, 6 Clusters)`;
+      if (isHqRole) return `All ${stores.length} Outlets Nationwide (3 Regions, 6 Clusters)`;
       if (currentRole === 'region_manager') return `All ${availableStores.length} Outlets in North Region`;
       return `All ${availableStores.length} Outlets in Metro Alpha Cluster`;
     }
@@ -170,7 +180,7 @@ export const BroadcastComposerModal: React.FC<BroadcastComposerModalProps> = ({
                 {scope === 'all' && <CheckCircle2 className="w-3.5 h-3.5" />}
               </button>
 
-              {currentRole === 'business_head' && (
+              {isHqRole && (
                 <button
                   type="button"
                   onClick={() => setScope('regions')}
@@ -325,10 +335,14 @@ export const BroadcastComposerModal: React.FC<BroadcastComposerModalProps> = ({
                 onChange={e => setCategory(e.target.value as any)}
                 className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-2.5 py-2 text-xs text-neutral-200 focus:outline-hidden focus:border-amber-500"
               >
-                <option value="Overdue Escalation">Overdue Escalation</option>
                 <option value="Operational Notice">Operational Notice</option>
-                <option value="Target Drive">Target Drive</option>
                 <option value="Policy Update">Policy Update</option>
+                <option value="Overdue Escalation">Overdue Escalation</option>
+                <option value="HR & Staffing">HR & Staffing</option>
+                <option value="Accounting & Billing">Accounting & Billing</option>
+                <option value="Training & Academy">Training & Academy</option>
+                <option value="Marketing & Campaign">Marketing & Campaign</option>
+                <option value="Target Drive">Target Drive</option>
                 <option value="Emergency">Emergency</option>
               </select>
             </div>

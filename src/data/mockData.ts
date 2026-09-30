@@ -6,6 +6,10 @@ import {
   Ticket,
   BroadcastMessage,
   SystemNotification,
+  HrDepartmentStatus,
+  AccountingDepartmentStatus,
+  TrainingDepartmentStatus,
+  MarketingDepartmentStatus,
 } from '../types/erp';
 
 export const USER_PROFILES: Record<string, UserProfile> = {
@@ -13,15 +17,57 @@ export const USER_PROFILES: Record<string, UserProfile> = {
     id: 'usr_bh_01',
     name: 'Ananya Sharma',
     role: 'business_head',
+    department: 'Executive',
     title: 'Chief Operating Officer & Business Head',
     phone: '+91 98201 44550',
     email: 'ananya.s@saloncapp.com',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
   },
+  hr_head: {
+    id: 'usr_hr_01',
+    name: 'Priyanka Sen',
+    role: 'hr_head',
+    department: 'Human Resources',
+    title: 'VP of Human Resources & People Operations',
+    phone: '+91 98190 22334',
+    email: 'priyanka.s@saloncapp.com',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+  },
+  accounting_head: {
+    id: 'usr_acc_01',
+    name: 'Ramesh Sundaram',
+    role: 'accounting_head',
+    department: 'Finance & Accounting',
+    title: 'Head of Accounts, Audits & Franchise Billing',
+    phone: '+91 98211 44778',
+    email: 'ramesh.s@saloncapp.com',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
+  },
+  training_head: {
+    id: 'usr_trn_01',
+    name: 'Dr. Tanya Kapoor',
+    role: 'training_head',
+    department: 'Training & Academy',
+    title: 'Head of Salon Academy, SOP & Stylist Certifications',
+    phone: '+91 98330 66551',
+    email: 'tanya.k@saloncapp.com',
+    avatar: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=200',
+  },
+  marketing_head: {
+    id: 'usr_mkt_01',
+    name: 'Aditya Mathur',
+    role: 'marketing_head',
+    department: 'Marketing & Growth',
+    title: 'Head of Brand Marketing & Footfall Campaigns',
+    phone: '+91 98401 88220',
+    email: 'aditya.m@saloncapp.com',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200',
+  },
   region_manager: {
     id: 'usr_rm_01',
     name: 'Vikram Singhania',
     role: 'region_manager',
+    department: 'Operations',
     title: 'North Region Head',
     phone: '+91 98110 33221',
     email: 'vikram.s@saloncapp.com',
@@ -32,6 +78,7 @@ export const USER_PROFILES: Record<string, UserProfile> = {
     id: 'usr_cm_01',
     name: 'Rajesh Verma',
     role: 'cluster_manager',
+    department: 'Operations',
     title: 'Cluster Manager - Metro Hub Alpha',
     phone: '+91 98711 88992',
     email: 'rajesh.v@saloncapp.com',
@@ -43,6 +90,7 @@ export const USER_PROFILES: Record<string, UserProfile> = {
     id: 'usr_sm_01',
     name: 'Pooja Nair',
     role: 'store_manager',
+    department: 'Operations',
     title: 'Outlet Manager - Luxe Glamour #104',
     phone: '+91 99300 22119',
     email: 'pooja.n@saloncapp.com',
@@ -51,6 +99,56 @@ export const USER_PROFILES: Record<string, UserProfile> = {
     storeId: 'str_104',
     avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200',
   },
+};
+
+export const INITIAL_HR_STATUS: HrDepartmentStatus = {
+  totalStaff: 248,
+  openStylistVacancies: 14,
+  attendanceRate: 94.6,
+  pendingTransfersCount: 3,
+  monthlyAttritionPct: 3.2,
+  recentShortages: [
+    { storeCode: 'DEL-104', storeName: 'Luxe Glamour Salon #104', missingRoles: '2 Senior Colorists', urgency: 'High' },
+    { storeCode: 'DEL-109', storeName: 'Aura Premium Spa #109', missingRoles: '1 Spa Aesthetician', urgency: 'Medium' },
+    { storeCode: 'BLR-304', storeName: 'Whitefield Studio #304', missingRoles: '2 Hair Stylists', urgency: 'Critical' },
+  ],
+};
+
+export const INITIAL_ACCOUNTING_STATUS: AccountingDepartmentStatus = {
+  totalRoyaltyCollected: 3840000,
+  totalRoyaltyPending: 1045000,
+  collateralReservePool: 4800000,
+  reconciliationRate: 88.4,
+  accountsOnHoldCount: 2,
+  recentBillingAudits: [
+    { storeCode: 'DEL-109', storeName: 'Aura Premium Spa #109', amount: 130000, status: 'Payment Plan Under Review' },
+    { storeCode: 'DEL-104', storeName: 'Luxe Glamour #104', amount: 85000, status: 'Overdue Notice Dispatched' },
+    { storeCode: 'BLR-301', storeName: 'Indiranagar Luxe #301', amount: 140000, status: '50% Partial Settle Received' },
+  ],
+};
+
+export const INITIAL_TRAINING_STATUS: TrainingDepartmentStatus = {
+  networkAuditScore: 92.4,
+  certifiedStylistsRatio: 86.8,
+  upcomingWorkshopsCount: 4,
+  hygieneSopCompliance: 96.1,
+  upcomingWorkshops: [
+    { id: 'ws_01', title: 'Advanced French Balayage & Glazing Masterclass', date: 'Tomorrow, 10:00 AM', registeredCount: 28, leadTrainer: 'Jean-Luc Laurent' },
+    { id: 'ws_02', title: 'Keratin & Botox Hair Therapy Certification', date: 'Oct 04, 2:00 PM', registeredCount: 34, leadTrainer: 'Dr. Tanya Kapoor' },
+    { id: 'ws_03', title: 'Hygiene & Autoclave Sterilization SOP Audit', date: 'Oct 08, 11:00 AM', registeredCount: 42, leadTrainer: 'Vikram Singhania' },
+  ],
+};
+
+export const INITIAL_MARKETING_STATUS: MarketingDepartmentStatus = {
+  activeCampaignsCount: 5,
+  totalCampaignLeads: 1840,
+  averageCsatRating: 4.8,
+  brandFootfallBoostPct: 22.4,
+  topPromotions: [
+    { id: 'pr_01', name: 'Festive Bridal Glow Package', discount: '25% OFF', redemptions: 412, activeTill: 'Oct 31' },
+    { id: 'pr_02', name: 'Luxury Hair Spa & Keratin Combo', discount: '₹1,500 Voucher', redemptions: 680, activeTill: 'Oct 15' },
+    { id: 'pr_03', name: 'First-Visit Welcome Privilege', discount: 'Flat 20% OFF', redemptions: 320, activeTill: 'Ongoing' },
+  ],
 };
 
 export const INITIAL_REGIONS: Region[] = [
@@ -489,6 +587,66 @@ export const INITIAL_BROADCASTS: BroadcastMessage[] = [
     readCount: 16,
     totalRecipients: 18,
     category: 'Overdue Escalation',
+  },
+  {
+    id: 'bc_hr_01',
+    senderRole: 'hr_head',
+    senderName: 'Priyanka Sen',
+    senderTitle: 'VP HR & People Ops',
+    title: 'Festive Season Stylist Attendance & Overtime Multipliers',
+    content:
+      'All outlet managers: 1.5x overtime rate is activated for junior and senior colorists during peak October weekends. Update biometrics rosters on ERP by Thursday 6 PM.',
+    priority: 'urgent',
+    scope: 'all',
+    timestamp: '2026-09-29T15:00:00Z',
+    readCount: 17,
+    totalRecipients: 18,
+    category: 'HR & Staffing',
+  },
+  {
+    id: 'bc_acc_01',
+    senderRole: 'accounting_head',
+    senderName: 'Ramesh Sundaram',
+    senderTitle: 'Head of Accounts & Billing',
+    title: 'Month-End Royalty Reconciliation & GST Input Credit Window',
+    content:
+      'Accounts Department circular: GSTR-1 matching deadline is the 5th. Franchises with overdue accounts will receive automated payment gateway reminders. Partial clearance plans are now accepted.',
+    priority: 'urgent',
+    scope: 'all',
+    timestamp: '2026-09-29T13:30:00Z',
+    readCount: 14,
+    totalRecipients: 18,
+    category: 'Accounting & Billing',
+  },
+  {
+    id: 'bc_trn_01',
+    senderRole: 'training_head',
+    senderName: 'Dr. Tanya Kapoor',
+    senderTitle: 'Head of Academy & SOP',
+    title: 'Mandatory French Balayage Masterclass Enrollment',
+    content:
+      'Academy announcement: 2 senior colorists per outlet must register for the upcoming French Balayage and Glazing digital session. Link dispatched to store tablets.',
+    priority: 'normal',
+    scope: 'all',
+    timestamp: '2026-09-28T14:00:00Z',
+    readCount: 15,
+    totalRecipients: 18,
+    category: 'Training & Academy',
+  },
+  {
+    id: 'bc_mkt_01',
+    senderRole: 'marketing_head',
+    senderName: 'Aditya Mathur',
+    senderTitle: 'Head of Brand Marketing',
+    title: 'Nationwide Launch: Festive Bridal Glow & Luxe Spa Campaign',
+    content:
+      'Marketing kits, mirror decals, and WhatsApp booking coupon codes (GLOW25) have been dispatched to all salons. Track local redemption via Salon ERP CRM.',
+    priority: 'normal',
+    scope: 'all',
+    timestamp: '2026-09-29T10:15:00Z',
+    readCount: 18,
+    totalRecipients: 18,
+    category: 'Marketing & Campaign',
   },
   {
     id: 'bc_002',

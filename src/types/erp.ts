@@ -1,4 +1,12 @@
-export type RoleType = 'business_head' | 'region_manager' | 'cluster_manager' | 'store_manager';
+export type RoleType =
+  | 'business_head'
+  | 'hr_head'
+  | 'accounting_head'
+  | 'training_head'
+  | 'marketing_head'
+  | 'region_manager'
+  | 'cluster_manager'
+  | 'store_manager';
 
 export type TicketSeverity = 'low' | 'medium' | 'high' | 'critical';
 
@@ -9,7 +17,9 @@ export type TicketCategory =
   | 'Staff & Stylist Shortage'
   | 'Product & Chemical Supply'
   | 'Franchise Compliance'
-  | 'Customer Dispute';
+  | 'Customer Dispute'
+  | 'Marketing & Promo Request'
+  | 'Training & Quality Audit';
 
 export type TicketStatus =
   | 'pending_cluster'
@@ -23,6 +33,7 @@ export interface UserProfile {
   id: string;
   name: string;
   role: RoleType;
+  department?: 'Executive' | 'Human Resources' | 'Finance & Accounting' | 'Training & Academy' | 'Marketing & Growth' | 'Operations';
   title: string;
   phone: string;
   email: string;
@@ -30,6 +41,40 @@ export interface UserProfile {
   clusterId?: string;
   storeId?: string;
   avatar: string;
+}
+
+export interface HrDepartmentStatus {
+  totalStaff: number;
+  openStylistVacancies: number;
+  attendanceRate: number;
+  pendingTransfersCount: number;
+  monthlyAttritionPct: number;
+  recentShortages: { storeCode: string; storeName: string; missingRoles: string; urgency: string }[];
+}
+
+export interface AccountingDepartmentStatus {
+  totalRoyaltyCollected: number;
+  totalRoyaltyPending: number;
+  collateralReservePool: number;
+  reconciliationRate: number;
+  accountsOnHoldCount: number;
+  recentBillingAudits: { storeCode: string; storeName: string; amount: number; status: string }[];
+}
+
+export interface TrainingDepartmentStatus {
+  networkAuditScore: number;
+  certifiedStylistsRatio: number;
+  upcomingWorkshopsCount: number;
+  hygieneSopCompliance: number;
+  upcomingWorkshops: { id: string; title: string; date: string; registeredCount: number; leadTrainer: string }[];
+}
+
+export interface MarketingDepartmentStatus {
+  activeCampaignsCount: number;
+  totalCampaignLeads: number;
+  averageCsatRating: number;
+  brandFootfallBoostPct: number;
+  topPromotions: { id: string; name: string; discount: string; redemptions: number; activeTill: string }[];
 }
 
 export interface Store {
@@ -126,7 +171,16 @@ export interface BroadcastMessage {
   timestamp: string;
   readCount: number;
   totalRecipients: number;
-  category: 'Operational Notice' | 'Policy Update' | 'Overdue Escalation' | 'Emergency' | 'Target Drive';
+  category:
+    | 'Operational Notice'
+    | 'Policy Update'
+    | 'Overdue Escalation'
+    | 'Emergency'
+    | 'Target Drive'
+    | 'HR & Staffing'
+    | 'Accounting & Billing'
+    | 'Training & Academy'
+    | 'Marketing & Campaign';
 }
 
 export interface SystemNotification {

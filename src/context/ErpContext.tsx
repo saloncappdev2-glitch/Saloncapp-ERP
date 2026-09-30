@@ -197,28 +197,35 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return regions.filter(r => r.id === currentUser.regionId);
   }, [isHqRole, currentUser, regions]);
 
-  // Scoped tickets based on hierarchy & departmental priority
+  // Scoped tickets strictly filtered by department domain
   const scopedTickets = useMemo(() => {
     if (currentRole === 'business_head') {
       return tickets;
     }
     if (currentRole === 'hr_head') {
-      // Prioritize staff & HR issues, but allow viewing all
-      return [...tickets].sort((a, b) => (a.category === 'Staff & Stylist Shortage' ? -1 : 1));
+      // ONLY HR & Stylist Staffing issues
+      return tickets.filter(t => t.category === 'Staff & Stylist Shortage');
     }
     if (currentRole === 'accounting_head') {
-      // Prioritize billing & royalty issues
-      return [...tickets].sort((a, b) =>
-        a.category === 'Royalty & Billing' || a.category === 'Collateral Recovery' ? -1 : 1
+      // ONLY Finance, Royalty & Collateral issues
+      return tickets.filter(
+        t => t.category === 'Royalty & Billing' || t.category === 'Collateral Recovery'
       );
     }
     if (currentRole === 'training_head') {
-      return [...tickets].sort((a, b) =>
-        a.category === 'Equipment & AC Breakdown' || a.category === 'Franchise Compliance' ? -1 : 1
+      // ONLY Academy, SOP, Hygiene & Quality Audits
+      return tickets.filter(
+        t =>
+          t.category === 'Training & Quality Audit' ||
+          t.category === 'Franchise Compliance' ||
+          t.category === 'Equipment & AC Breakdown'
       );
     }
     if (currentRole === 'marketing_head') {
-      return [...tickets].sort((a, b) => (a.category === 'Customer Dispute' ? -1 : 1));
+      // ONLY Promotions, Campaigns & Customer Disputes
+      return tickets.filter(
+        t => t.category === 'Marketing & Promo Request' || t.category === 'Customer Dispute'
+      );
     }
     if (currentRole === 'region_manager') {
       return tickets.filter(t => t.regionId === currentUser.regionId);
@@ -230,11 +237,40 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return tickets.filter(t => t.storeId === currentUser.storeId);
   }, [currentRole, currentUser, tickets]);
 
-  // Scoped broadcasts visible to this role
+  // Scoped broadcasts visible to this role (strictly department-filtered)
   const scopedBroadcasts = useMemo(() => {
     return broadcasts.filter(b => {
+      if (currentRole === 'hr_head') {
+        return (
+          b.category === 'HR & Staffing' ||
+          b.category === 'Policy Update' ||
+          b.category === 'Operational Notice'
+        );
+      }
+      if (currentRole === 'accounting_head') {
+        return (
+          b.category === 'Accounting & Billing' ||
+          b.category === 'Overdue Escalation' ||
+          b.category === 'Policy Update'
+        );
+      }
+      if (currentRole === 'training_head') {
+        return (
+          b.category === 'Training & Academy' ||
+          b.category === 'Operational Notice' ||
+          b.category === 'Policy Update'
+        );
+      }
+      if (currentRole === 'marketing_head') {
+        return (
+          b.category === 'Marketing & Campaign' ||
+          b.category === 'Target Drive' ||
+          b.category === 'Operational Notice'
+        );
+      }
+
       if (b.scope === 'all') return true;
-      if (isHqRole) return true;
+      if (currentRole === 'business_head') return true;
 
       if (currentRole === 'region_manager') {
         if (b.scope === 'regions' && b.targetRegionIds?.includes(currentUser.regionId || '')) return true;
@@ -253,21 +289,55 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (b.scope === 'regions' && b.targetRegionIds?.includes(currentUser.regionId || '')) return true;
       return false;
     });
-  }, [broadcasts, isHqRole, currentRole, currentUser]);
+  }, [broadcasts, currentRole, currentUser]);
 
   const unreadNotificationCount = useMemo(() => {
     return notifications.filter(n => {
+      if (n.isRead) return false;
+
+      // Department-specific notification filtering
+      if (currentRole === 'hr_head') {
+        return (
+          n.recipientRoles.includes('hr_head') ||
+          n.title.toLowerCase().includes('staff') ||
+          n.title.toLowerCase().includes('stylist')
+        );
+      }
+      if (currentRole === 'accounting_head') {
+        return (
+          n.recipientRoles.includes('accounting_head') ||
+          n.type === 'overdue_alert' ||
+          n.title.toLowerCase().includes('royalty') ||
+          n.title.toLowerCase().includes('billing')
+        );
+      }
+      if (currentRole === 'training_head') {
+        return (
+          n.recipientRoles.includes('training_head') ||
+          n.title.toLowerCase().includes('workshop') ||
+          n.title.toLowerCase().includes('hygiene') ||
+          n.title.toLowerCase().includes('audit')
+        );
+      }
+      if (currentRole === 'marketing_head') {
+        return (
+          n.recipientRoles.includes('marketing_head') ||
+          n.title.toLowerCase().includes('campaign') ||
+          n.title.toLowerCase().includes('promo')
+        );
+      }
+
       const roleMatch = n.recipientRoles.includes(currentRole);
-      if (!roleMatch && !isHqRole) return false;
+      if (!roleMatch) return false;
       if (n.targetScope?.regionId && currentUser.regionId && n.targetScope.regionId !== currentUser.regionId) {
         return false;
       }
       if (n.targetScope?.clusterId && currentUser.clusterId && n.targetScope.clusterId !== currentUser.clusterId) {
         return false;
       }
-      return !n.isRead;
+      return true;
     }).length;
-  }, [notifications, currentRole, isHqRole, currentUser]);
+  }, [notifications, currentRole, currentUser]);
 
   // CREATE TICKET (with severity restriction & notification rule)
   const createTicket = (data: {

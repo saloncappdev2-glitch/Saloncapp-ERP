@@ -42,6 +42,53 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
 
   const directCount = scopedTickets.filter(t => t.directToBH).length;
 
+  const getDeskInfo = () => {
+    switch (currentRole) {
+      case 'hr_head':
+        return {
+          title: 'HR & Staffing Escalations',
+          subtitle: 'Stylist shortages, absentee rosters, and emergency transfer requests',
+        };
+      case 'accounting_head':
+        return {
+          title: 'Finance & Royalty Disputes',
+          subtitle: 'Billing reconciliation, royalty penalty waivers, and collateral holds',
+        };
+      case 'training_head':
+        return {
+          title: 'Academy SOP & Quality Audits',
+          subtitle: 'Salon hygiene infractions, autoclave breakdowns, and protocol audits',
+        };
+      case 'marketing_head':
+        return {
+          title: 'Marketing & Promo Complaints',
+          subtitle: 'Campaign discount errors, booking coupon sync, and customer reviews',
+        };
+      case 'business_head':
+        return {
+          title: 'Executive Escalation Desk',
+          subtitle: 'Executive approvals & high-priority network interventions',
+        };
+      case 'region_manager':
+        return {
+          title: 'Regional Escalation Desk',
+          subtitle: 'Regional reviews & cluster dispute triage',
+        };
+      case 'cluster_manager':
+        return {
+          title: 'Cluster Escalation Desk',
+          subtitle: 'Cluster store reviews & operational support',
+        };
+      default:
+        return {
+          title: 'Store Escalation Desk',
+          subtitle: 'Logged salon issues & management resolution timeline',
+        };
+    }
+  };
+
+  const deskInfo = getDeskInfo();
+
   return (
     <div className="space-y-4 pb-6">
       {/* Header Info */}
@@ -49,16 +96,10 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
         <div>
           <h2 className="text-base font-extrabold text-white flex items-center gap-2">
             <ShieldAlert className="w-5 h-5 text-rose-500" />
-            Escalation Desk
+            {deskInfo.title}
           </h2>
           <p className="text-xs text-neutral-400">
-            {currentRole === 'business_head'
-              ? 'Executive approvals & high-priority interventions'
-              : currentRole === 'region_manager'
-              ? 'Regional reviews & cluster dispute triage'
-              : currentRole === 'cluster_manager'
-              ? 'Cluster reviews & store support'
-              : 'Logged store issues & resolution timeline'}
+            {deskInfo.subtitle}
           </p>
         </div>
 

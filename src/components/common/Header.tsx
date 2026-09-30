@@ -21,6 +21,84 @@ export const Header: React.FC<HeaderProps> = ({
     toggleDeviceFrame,
   } = useErp();
 
+  const getHeaderAction = () => {
+    if (currentRole === 'store_manager') {
+      return (
+        <button
+          onClick={onOpenTicketModal}
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold shadow-xs shadow-rose-900/30 transition-transform active:scale-95"
+          title="Report / Escalate Issue"
+        >
+          <PlusCircle className="w-3.5 h-3.5" />
+          <span>Escalate</span>
+        </button>
+      );
+    }
+
+    if (currentRole === 'hr_head') {
+      return (
+        <button
+          onClick={onOpenBroadcastModal}
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-xs shadow-indigo-900/30 transition-transform active:scale-95"
+          title="Send HR Circular"
+        >
+          <Send className="w-3.5 h-3.5" />
+          <span>HR Circular</span>
+        </button>
+      );
+    }
+
+    if (currentRole === 'accounting_head') {
+      return (
+        <button
+          onClick={onOpenBroadcastModal}
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-xs shadow-emerald-900/30 transition-transform active:scale-95"
+          title="Send Billing Mandate"
+        >
+          <Send className="w-3.5 h-3.5" />
+          <span>Billing Notice</span>
+        </button>
+      );
+    }
+
+    if (currentRole === 'training_head') {
+      return (
+        <button
+          onClick={onOpenBroadcastModal}
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow-xs shadow-purple-900/30 transition-transform active:scale-95"
+          title="Publish Academy SOP"
+        >
+          <Send className="w-3.5 h-3.5" />
+          <span>Academy SOP</span>
+        </button>
+      );
+    }
+
+    if (currentRole === 'marketing_head') {
+      return (
+        <button
+          onClick={onOpenBroadcastModal}
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-xs shadow-rose-900/30 transition-transform active:scale-95"
+          title="Broadcast Campaign"
+        >
+          <Send className="w-3.5 h-3.5" />
+          <span>Promo Push</span>
+        </button>
+      );
+    }
+
+    return (
+      <button
+        onClick={onOpenBroadcastModal}
+        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-neutral-950 text-xs font-bold shadow-xs shadow-amber-900/30 transition-transform active:scale-95"
+        title="Broadcast Announcement"
+      >
+        <Send className="w-3.5 h-3.5" />
+        <span>Broadcast</span>
+      </button>
+    );
+  };
+
   return (
     <header className="bg-neutral-950/90 backdrop-blur-md border-b border-neutral-800/80 px-4 py-3 flex items-center justify-between gap-3 sticky top-0 z-20">
       <div className="flex items-center gap-2.5">
@@ -33,7 +111,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-1.5">
             <h1 className="font-extrabold text-sm tracking-tight text-white">saloncapp</h1>
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-              ERP
+              {currentUser.department ? currentUser.department.slice(0, 10) : 'ERP'}
             </span>
           </div>
           <p className="text-[11px] text-neutral-400 truncate max-w-[150px]">
@@ -44,25 +122,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       <div className="flex items-center gap-2">
         {/* Quick role-specific main action */}
-        {currentRole === 'store_manager' ? (
-          <button
-            onClick={onOpenTicketModal}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold shadow-xs shadow-rose-900/30 transition-transform active:scale-95"
-            title="Report / Escalate Issue"
-          >
-            <PlusCircle className="w-3.5 h-3.5" />
-            <span>Escalate</span>
-          </button>
-        ) : (
-          <button
-            onClick={onOpenBroadcastModal}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-neutral-950 text-xs font-bold shadow-xs shadow-amber-900/30 transition-transform active:scale-95"
-            title="Broadcast Announcement"
-          >
-            <Send className="w-3.5 h-3.5" />
-            <span>Broadcast</span>
-          </button>
-        )}
+        {getHeaderAction()}
 
         {/* Device Frame Toggle */}
         <button

@@ -45,6 +45,14 @@ export const BroadcastsTabView: React.FC<BroadcastsTabViewProps> = ({
     switch (role) {
       case 'business_head':
         return 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+      case 'hr_head':
+        return 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40';
+      case 'accounting_head':
+        return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
+      case 'training_head':
+        return 'bg-purple-500/20 text-purple-300 border-purple-500/40';
+      case 'marketing_head':
+        return 'bg-rose-500/20 text-rose-300 border-rose-500/40';
       case 'region_manager':
         return 'bg-blue-500/20 text-blue-300 border-blue-500/40';
       case 'cluster_manager':
@@ -85,9 +93,12 @@ export const BroadcastsTabView: React.FC<BroadcastsTabViewProps> = ({
       <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
         {[
           { id: 'all', label: 'All Notices' },
+          { id: 'HR & Staffing', label: '👥 HR' },
+          { id: 'Accounting & Billing', label: '💳 Billing' },
+          { id: 'Training & Academy', label: '🎓 Academy' },
+          { id: 'Marketing & Campaign', label: '📢 Marketing' },
           { id: 'Overdue Escalation', label: '💰 Overdues' },
           { id: 'Operational Notice', label: '📋 Operational' },
-          { id: 'Target Drive', label: '🎯 Target Drives' },
         ].map(cat => (
           <button
             key={cat.id}

@@ -12,6 +12,9 @@ import { RegionManagerView } from '../views/RegionManagerView';
 import { ClusterManagerView } from '../views/ClusterManagerView';
 import { StoreManagerView } from '../views/StoreManagerView';
 import { OverduesTabView } from '../views/OverduesTabView';
+import { HrShortagesView } from '../views/HrShortagesView';
+import { TrainingWorkshopsView } from '../views/TrainingWorkshopsView';
+import { MarketingPromosView } from '../views/MarketingPromosView';
 import { EscalationsTabView } from '../views/EscalationsTabView';
 import { BroadcastsTabView } from '../views/BroadcastsTabView';
 import { AuditHierarchyTabView } from '../views/AuditHierarchyTabView';
@@ -56,6 +59,16 @@ export const MobileShell: React.FC = () => {
   // Render content according to active tab
   const renderTabContent = () => {
     if (activeTab === 'overdues') {
+      if (currentRole === 'hr_head') {
+        return <HrShortagesView />;
+      }
+      if (currentRole === 'training_head') {
+        return <TrainingWorkshopsView />;
+      }
+      if (currentRole === 'marketing_head') {
+        return <MarketingPromosView />;
+      }
+      // Accounting & Operations (BH, RM, CM, Store) view Overdues
       return <OverduesTabView />;
     }
     if (activeTab === 'escalations') {

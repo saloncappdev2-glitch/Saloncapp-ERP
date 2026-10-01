@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useErp } from '../../context/ErpContext';
 import { EscalationCard } from '../common/EscalationCard';
 import { Ticket } from '../../types/erp';
+import { ScrollableChipBar } from '../common/ScrollableChipBar';
 import { ShieldAlert, PlusCircle, CheckCircle2, Zap, Filter } from 'lucide-react';
 
 interface EscalationsTabViewProps {
@@ -115,10 +116,10 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
       </div>
 
       {/* Filter Chips */}
-      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+      <ScrollableChipBar>
         <button
           onClick={() => setFilter('all')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border transition-all ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border shrink-0 transition-all ${
             filter === 'all'
               ? 'bg-neutral-200 text-neutral-950 border-white'
               : 'bg-neutral-900 border-neutral-800 text-neutral-400'
@@ -129,7 +130,7 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
 
         <button
           onClick={() => setFilter('pending')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border transition-all ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border shrink-0 transition-all ${
             filter === 'pending'
               ? 'bg-amber-500 text-neutral-950 border-amber-400'
               : 'bg-neutral-900 border-neutral-800 text-neutral-400'
@@ -140,7 +141,7 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
 
         <button
           onClick={() => setFilter('direct')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border transition-all ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border shrink-0 transition-all ${
             filter === 'direct'
               ? 'bg-rose-500 text-white border-rose-400'
               : 'bg-neutral-900 border-neutral-800 text-neutral-400'
@@ -151,7 +152,7 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
 
         <button
           onClick={() => setFilter('resolved')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border transition-all ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border shrink-0 transition-all ${
             filter === 'resolved'
               ? 'bg-emerald-600 text-white border-emerald-500'
               : 'bg-neutral-900 border-neutral-800 text-neutral-400'
@@ -159,7 +160,7 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
         >
           Archived / Resolved
         </button>
-      </div>
+      </ScrollableChipBar>
 
       {/* Escalation Cards List */}
       {filteredTickets.length === 0 ? (
@@ -171,7 +172,7 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
           {filteredTickets.map(ticket => (
             <EscalationCard
               key={ticket.id}

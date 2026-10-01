@@ -28,6 +28,7 @@ export const BottomNav: React.FC = () => {
     hrStatus,
     trainingStatus,
     marketingStatus,
+    mobileDeviceFrame,
   } = useErp();
 
   // Pending escalations in current role's scoped tickets
@@ -214,7 +215,9 @@ export const BottomNav: React.FC = () => {
   const navItems = getNavItems();
 
   return (
-    <nav className="bg-neutral-950/95 backdrop-blur-lg border-t border-neutral-800/80 px-2 py-2 flex items-center justify-around sticky bottom-0 z-20">
+    <nav className={`bg-neutral-950/95 backdrop-blur-lg border-t border-neutral-800/80 px-2 py-2 flex items-center justify-around sticky bottom-0 z-20 transition-all ${
+      mobileDeviceFrame ? 'w-full' : 'md:hidden w-full'
+    }`}>
       {navItems.map(item => {
         const isActive = activeTab === item.id;
         const Icon = item.icon;

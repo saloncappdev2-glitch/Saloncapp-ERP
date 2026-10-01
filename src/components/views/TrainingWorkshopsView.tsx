@@ -50,7 +50,7 @@ export const TrainingWorkshopsView: React.FC = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
             <span className="text-[10px] uppercase font-bold text-neutral-400 block">
               Certified Stylists
@@ -131,7 +131,7 @@ export const TrainingWorkshopsView: React.FC = () => {
           </form>
         )}
 
-        <div className="space-y-2.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {trainingStatus.upcomingWorkshops.map(ws => (
             <div
               key={ws.id}

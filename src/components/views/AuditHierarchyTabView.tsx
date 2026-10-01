@@ -57,7 +57,7 @@ export const AuditHierarchyTabView: React.FC = () => {
           <span className="text-[10px] text-neutral-500">5 Executive Roles</span>
         </div>
 
-        <div className="grid grid-cols-1 gap-2 text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
           {/* Business Head */}
           <div
             onClick={() => setCurrentRole('business_head')}

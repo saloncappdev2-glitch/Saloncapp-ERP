@@ -107,7 +107,7 @@ const ErpContext = createContext<ErpContextType | undefined>(undefined);
 
 export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentRole, setCurrentRole] = useState<RoleType>('business_head');
-  const [mobileDeviceFrame, setMobileDeviceFrame] = useState<boolean>(true);
+  const [mobileDeviceFrame, setMobileDeviceFrame] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'overdues' | 'escalations' | 'broadcasts' | 'profile'>('overview');
 
   const [regions, setRegions] = useState<Region[]>(INITIAL_REGIONS);

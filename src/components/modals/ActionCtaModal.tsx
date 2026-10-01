@@ -60,7 +60,7 @@ export const ActionCtaModal: React.FC<ActionCtaModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-sm bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col">
+      <div className="w-full max-w-sm sm:max-w-md bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col">
         {/* Header */}
         <div className="px-5 py-4 border-b border-neutral-800 flex items-center justify-between bg-neutral-950/60">
           <div className="flex items-center gap-2">

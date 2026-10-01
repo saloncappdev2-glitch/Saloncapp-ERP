@@ -59,7 +59,7 @@ export const BusinessHeadView: React.FC<BusinessHeadViewProps> = ({
         </div>
 
         {/* Executive Minimal Metric Tiles */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
           {/* Revenue */}
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
             <span className="text-[10px] uppercase font-bold text-neutral-400 flex items-center gap-1">
@@ -150,7 +150,7 @@ export const BusinessHeadView: React.FC<BusinessHeadViewProps> = ({
             </span>
             <span className="text-[10px] font-semibold text-rose-300">Requires BH CTA</span>
           </div>
-          <div className="space-y-2.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {directBHTickets.map(ticket => (
               <EscalationCard
                 key={ticket.id}
@@ -173,7 +173,7 @@ export const BusinessHeadView: React.FC<BusinessHeadViewProps> = ({
           <span className="text-[10px] text-neutral-500">3 Regions Active</span>
         </div>
 
-        <div className="space-y-2.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {regions.map(region => {
             const pct = Math.round((region.achievedRevenue / region.targetRevenue) * 100);
             const isWarning = region.totalRoyaltyOverdue > 300000;

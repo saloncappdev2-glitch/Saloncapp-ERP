@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useErp } from '../../context/ErpContext';
 import { OverdueCard } from '../common/OverdueCard';
+import { ScrollableChipBar } from '../common/ScrollableChipBar';
 import { formatCurrency } from '../../utils/formatters';
 import { AlertCircle, Filter, CheckCircle2, ShieldAlert } from 'lucide-react';
 
@@ -36,7 +37,7 @@ export const OverduesTabView: React.FC = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
             <span className="text-[10px] uppercase font-bold text-neutral-400 block">
               Total Royalty Overdue
@@ -60,7 +61,7 @@ export const OverduesTabView: React.FC = () => {
       </div>
 
       {/* Filter Chips */}
-      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+      <ScrollableChipBar>
         {[
           { id: 'all', label: `All Overdue (${storesWithOverdue.length})` },
           { id: 'critical', label: '🚨 >60 Days Overdue' },
@@ -70,7 +71,7 @@ export const OverduesTabView: React.FC = () => {
           <button
             key={f.id}
             onClick={() => setFilter(f.id as any)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border shrink-0 transition-all ${
               filter === f.id
                 ? 'bg-amber-500 text-neutral-950 border-amber-400 font-black'
                 : 'bg-neutral-850 border-neutral-800 text-neutral-400 hover:text-neutral-200'
@@ -79,7 +80,7 @@ export const OverduesTabView: React.FC = () => {
             {f.label}
           </button>
         ))}
-      </div>
+      </ScrollableChipBar>
 
       {/* Stores List */}
       {filteredStores.length === 0 ? (
@@ -91,7 +92,7 @@ export const OverduesTabView: React.FC = () => {
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {filteredStores.map(store => (
             <OverdueCard key={store.id} store={store} />
           ))}

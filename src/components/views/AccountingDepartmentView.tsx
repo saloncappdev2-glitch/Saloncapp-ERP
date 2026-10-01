@@ -67,7 +67,7 @@ export const AccountingDepartmentView: React.FC<AccountingDepartmentViewProps> =
         </div>
 
         {/* Financial KPI Grid */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
           {/* Collected */}
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
             <span className="text-[10px] uppercase font-bold text-emerald-400 flex items-center gap-1">
@@ -153,7 +153,7 @@ export const AccountingDepartmentView: React.FC<AccountingDepartmentViewProps> =
           </span>
         </div>
 
-        <div className="space-y-2.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {accountingStatus.recentBillingAudits.map((item, idx) => (
             <div
               key={idx}
@@ -195,7 +195,7 @@ export const AccountingDepartmentView: React.FC<AccountingDepartmentViewProps> =
           </button>
         </div>
 
-        <div className="space-y-2.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {delinquentStores.slice(0, 3).map(store => (
             <div
               key={store.id}

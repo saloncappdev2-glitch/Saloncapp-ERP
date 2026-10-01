@@ -156,13 +156,17 @@ export const MobileShell: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex items-center justify-center p-0 sm:p-4 md:p-6">
+    <div className={`min-h-screen bg-neutral-950 text-neutral-100 flex flex-col ${
+      mobileDeviceFrame
+        ? 'items-center justify-center p-2 sm:p-4 md:p-6 bg-neutral-900/60'
+        : 'w-full'
+    }`}>
       {/* Mobile Device Frame or Responsive Container */}
       <div
-        className={`w-full bg-neutral-950 flex flex-col transition-all overflow-hidden ${
+        className={`w-full bg-neutral-950 flex flex-col transition-all ${
           mobileDeviceFrame
-            ? 'max-w-[420px] h-[92vh] max-h-[890px] rounded-[48px] border-[10px] border-neutral-800 shadow-2xl ring-1 ring-white/10 relative'
-            : 'max-w-md min-h-screen border-x border-neutral-800/80 shadow-2xl relative'
+            ? 'max-w-[420px] h-[92vh] max-h-[890px] rounded-[48px] border-[10px] border-neutral-800 shadow-2xl ring-1 ring-white/10 relative overflow-hidden'
+            : 'w-full min-h-screen relative'
         }`}
       >
         {/* iOS / Phone Status Bar (when frame is active) */}
@@ -193,7 +197,11 @@ export const MobileShell: React.FC = () => {
         <RoleSwitcherBar />
 
         {/* Main Scrollable View Area */}
-        <main className="flex-1 overflow-y-auto px-3.5 pt-3.5">
+        <main className={`flex-1 overflow-y-auto ${
+          mobileDeviceFrame
+            ? 'px-3.5 pt-3.5 pb-4'
+            : 'px-4 sm:px-6 lg:px-8 py-5 max-w-7xl w-full mx-auto'
+        }`}>
           {renderTabContent()}
         </main>
 

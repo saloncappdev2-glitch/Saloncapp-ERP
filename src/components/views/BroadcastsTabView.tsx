@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useErp } from '../../context/ErpContext';
 import { formatTimeAgo } from '../../utils/formatters';
 import { BroadcastMessage } from '../../types/erp';
+import { ScrollableChipBar } from '../common/ScrollableChipBar';
 import {
   Radio,
   Send,
@@ -90,7 +91,7 @@ export const BroadcastsTabView: React.FC<BroadcastsTabViewProps> = ({
       </div>
 
       {/* Category Pills */}
-      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+      <ScrollableChipBar>
         {[
           { id: 'all', label: 'All Notices' },
           { id: 'HR & Staffing', label: '👥 HR' },
@@ -103,7 +104,7 @@ export const BroadcastsTabView: React.FC<BroadcastsTabViewProps> = ({
           <button
             key={cat.id}
             onClick={() => setSelectedCategory(cat.id)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border shrink-0 transition-all ${
               selectedCategory === cat.id
                 ? 'bg-amber-500 text-neutral-950 border-amber-400'
                 : 'bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-200'
@@ -112,10 +113,10 @@ export const BroadcastsTabView: React.FC<BroadcastsTabViewProps> = ({
             {cat.label}
           </button>
         ))}
-      </div>
+      </ScrollableChipBar>
 
       {/* Broadcast Feed */}
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
         {filteredBroadcasts.map(bc => (
           <div
             key={bc.id}

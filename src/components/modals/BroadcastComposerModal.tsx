@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useErp } from '../../context/ErpContext';
 import { BroadcastScope } from '../../types/erp';
+import { ScrollableChipBar } from '../common/ScrollableChipBar';
 import {
   X,
   Send,
@@ -133,7 +134,7 @@ export const BroadcastComposerModal: React.FC<BroadcastComposerModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
+      <div className="w-full max-w-md sm:max-w-xl bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
         {/* Header */}
         <div className="px-5 py-4 border-b border-neutral-800 flex items-center justify-between bg-neutral-950/60">
           <div>
@@ -231,7 +232,7 @@ export const BroadcastComposerModal: React.FC<BroadcastComposerModalProps> = ({
               <span className="text-[11px] font-bold text-neutral-400 block uppercase">
                 Select Regions ({selectedRegionIds.length} selected):
               </span>
-              <div className="flex flex-wrap gap-1.5">
+              <ScrollableChipBar>
                 {availableRegions.map(reg => {
                   const isChecked = selectedRegionIds.includes(reg.id);
                   return (
@@ -239,17 +240,17 @@ export const BroadcastComposerModal: React.FC<BroadcastComposerModalProps> = ({
                       key={reg.id}
                       type="button"
                       onClick={() => toggleRegion(reg.id)}
-                      className={`text-xs px-2.5 py-1.5 rounded-lg border transition-all ${
+                      className={`text-xs px-3 py-1.5 rounded-xl border shrink-0 whitespace-nowrap transition-all ${
                         isChecked
                           ? 'bg-amber-500 text-neutral-950 font-bold border-amber-400'
-                          : 'bg-neutral-800 text-neutral-300 border-neutral-700 hover:bg-neutral-700'
+                          : 'bg-neutral-850 text-neutral-300 border-neutral-750 hover:bg-neutral-800'
                       }`}
                     >
                       {reg.name}
                     </button>
                   );
                 })}
-              </div>
+              </ScrollableChipBar>
             </div>
           )}
 
@@ -258,7 +259,7 @@ export const BroadcastComposerModal: React.FC<BroadcastComposerModalProps> = ({
               <span className="text-[11px] font-bold text-neutral-400 block uppercase">
                 Select Clusters ({selectedClusterIds.length} selected):
               </span>
-              <div className="flex flex-wrap gap-1.5">
+              <ScrollableChipBar>
                 {availableClusters.map(cl => {
                   const isChecked = selectedClusterIds.includes(cl.id);
                   return (
@@ -266,17 +267,17 @@ export const BroadcastComposerModal: React.FC<BroadcastComposerModalProps> = ({
                       key={cl.id}
                       type="button"
                       onClick={() => toggleCluster(cl.id)}
-                      className={`text-xs px-2.5 py-1.5 rounded-lg border transition-all ${
+                      className={`text-xs px-3 py-1.5 rounded-xl border shrink-0 whitespace-nowrap transition-all ${
                         isChecked
                           ? 'bg-amber-500 text-neutral-950 font-bold border-amber-400'
-                          : 'bg-neutral-800 text-neutral-300 border-neutral-700 hover:bg-neutral-700'
+                          : 'bg-neutral-850 text-neutral-300 border-neutral-750 hover:bg-neutral-800'
                       }`}
                     >
                       {cl.name}
                     </button>
                   );
                 })}
-              </div>
+              </ScrollableChipBar>
             </div>
           )}
 

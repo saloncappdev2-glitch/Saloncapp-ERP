@@ -57,7 +57,7 @@ export const HrDepartmentView: React.FC<HrDepartmentViewProps> = ({
         </div>
 
         {/* HR KPI Grid */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
           {/* Total Staff */}
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
             <span className="text-[10px] uppercase font-bold text-neutral-400 flex items-center gap-1">
@@ -145,7 +145,7 @@ export const HrDepartmentView: React.FC<HrDepartmentViewProps> = ({
             All outlet stylist allocations currently filled!
           </div>
         ) : (
-          <div className="space-y-2.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {hrStatus.recentShortages.map((shortage, idx) => (
               <div
                 key={idx}
@@ -204,7 +204,7 @@ export const HrDepartmentView: React.FC<HrDepartmentViewProps> = ({
           </button>
         </div>
 
-        <div className="space-y-2.5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           {hrTickets.slice(0, 2).map(ticket => (
             <EscalationCard
               key={ticket.id}

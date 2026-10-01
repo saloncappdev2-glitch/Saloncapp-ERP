@@ -66,7 +66,7 @@ export const RegionManagerView: React.FC<RegionManagerViewProps> = ({
         </div>
 
         {/* Minimal metrics grid */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
           {/* Revenue */}
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
             <span className="text-[10px] uppercase font-bold text-neutral-400 flex items-center gap-1">
@@ -150,7 +150,7 @@ export const RegionManagerView: React.FC<RegionManagerViewProps> = ({
           <span className="text-[10px] text-neutral-500">{regionClusters.length} Clusters</span>
         </div>
 
-        <div className="space-y-2.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {regionClusters.map(cluster => {
             const pct = Math.round((cluster.achievedRevenue / cluster.targetRevenue) * 100);
 
@@ -225,7 +225,7 @@ export const RegionManagerView: React.FC<RegionManagerViewProps> = ({
             No pending escalations awaiting regional review.
           </div>
         ) : (
-          <div className="space-y-2.5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             {pendingRMTickets.map(tkt => (
               <EscalationCard
                 key={tkt.id}

@@ -59,7 +59,7 @@ export const StoreManagerView: React.FC<StoreManagerViewProps> = ({
         </div>
 
         {/* Minimal metrics */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
           {/* Revenue */}
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
             <span className="text-[10px] uppercase font-bold text-neutral-400 flex items-center gap-1">
@@ -161,7 +161,7 @@ export const StoreManagerView: React.FC<StoreManagerViewProps> = ({
           </button>
         </div>
 
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {latestBroadcasts.map(bc => (
             <div
               key={bc.id}
@@ -199,7 +199,7 @@ export const StoreManagerView: React.FC<StoreManagerViewProps> = ({
             No issues currently logged for your outlet.
           </div>
         ) : (
-          <div className="space-y-2.5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             {activeTickets.map(tkt => (
               <EscalationCard key={tkt.id} ticket={tkt} />
             ))}

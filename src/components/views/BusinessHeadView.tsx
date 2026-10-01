@@ -35,9 +35,9 @@ export const BusinessHeadView: React.FC<BusinessHeadViewProps> = ({
   const totalRoyaltyOverdue = regions.reduce((sum, r) => sum + r.totalRoyaltyOverdue, 0);
   const totalCollateralOverdue = regions.reduce((sum, r) => sum + r.totalCollateralOverdue, 0);
 
-  // Tickets awaiting BH decision (including Direct High/Critical escalations)
+  // Tickets awaiting BH decision (escalated up through hierarchy cycle)
   const pendingBHTickets = tickets.filter(t => t.status === 'pending_bh');
-  const directBHTickets = pendingBHTickets.filter(t => t.directToBH);
+  const urgentBHTickets = pendingBHTickets.filter(t => t.severity === 'high' || t.severity === 'critical');
 
   // Delinquent stores (>30 days overdue)
   const delinquentStores = stores.filter(s => s.royaltyDaysOverdue > 30 || s.collateralDaysOverdue > 30);
@@ -59,7 +59,7 @@ export const BusinessHeadView: React.FC<BusinessHeadViewProps> = ({
         </div>
 
         {/* Executive Minimal Metric Tiles */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
           {/* Revenue */}
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
             <span className="text-[10px] uppercase font-bold text-neutral-400 flex items-center gap-1">
@@ -85,9 +85,9 @@ export const BusinessHeadView: React.FC<BusinessHeadViewProps> = ({
             </span>
             <div className="text-base font-extrabold text-rose-300 mt-1 flex items-center gap-1.5">
               <span>{pendingBHTickets.length}</span>
-              {directBHTickets.length > 0 && (
+              {urgentBHTickets.length > 0 && (
                 <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-rose-500/30 text-rose-200 border border-rose-500/40 animate-pulse font-normal">
-                  {directBHTickets.length} Direct
+                  {urgentBHTickets.length} Urgent
                 </span>
               )}
             </div>
@@ -140,18 +140,18 @@ export const BusinessHeadView: React.FC<BusinessHeadViewProps> = ({
         </div>
       </div>
 
-      {/* Direct High/Critical Escalations Banner (The key prompt requirement) */}
-      {directBHTickets.length > 0 && (
+      {/* High/Critical Escalations Banner (Escalated via Hierarchy Cycle from Region Managers) */}
+      {urgentBHTickets.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center justify-between px-1">
             <span className="text-xs font-bold uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
               <Zap className="w-4 h-4 text-amber-400 animate-pulse" />
-              Direct Store Escalations (High / Critical)
+              High / Critical Escalations (Hierarchy Cycle Stage 3: Region ➔ BH)
             </span>
-            <span className="text-[10px] font-semibold text-rose-300">Requires BH CTA</span>
+            <span className="text-[10px] font-semibold text-rose-300">Final Decision Authority</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {directBHTickets.map(ticket => (
+            {urgentBHTickets.map(ticket => (
               <EscalationCard
                 key={ticket.id}
                 ticket={ticket}

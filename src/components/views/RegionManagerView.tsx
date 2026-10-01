@@ -44,9 +44,9 @@ export const RegionManagerView: React.FC<RegionManagerViewProps> = ({
   const royaltyOverdue = myRegion?.totalRoyaltyOverdue || 0;
   const collateralOverdue = myRegion?.totalCollateralOverdue || 0;
 
-  // Escalations in this region needing RM action or review
+  // Escalations in this region at Stage 2 of Hierarchy Cycle (escalated from Cluster Managers)
   const pendingRMTickets = scopedTickets.filter(
-    t => t.status === 'pending_region' || (t.directToBH && t.status === 'pending_bh')
+    t => t.status === 'pending_region'
   );
 
   return (
@@ -66,7 +66,7 @@ export const RegionManagerView: React.FC<RegionManagerViewProps> = ({
         </div>
 
         {/* Minimal metrics grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
           {/* Revenue */}
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
             <span className="text-[10px] uppercase font-bold text-neutral-400 flex items-center gap-1">
@@ -215,9 +215,9 @@ export const RegionManagerView: React.FC<RegionManagerViewProps> = ({
         <div className="flex items-center justify-between px-1">
           <h3 className="text-xs font-extrabold uppercase tracking-wider text-neutral-300 flex items-center gap-1.5">
             <ShieldAlert className="w-3.5 h-3.5 text-blue-400" />
-            Escalations from Clusters & Outlets
+            Regional Action Queue (Cycle Stage 2: From Clusters)
           </h3>
-          <span className="text-[10px] text-neutral-500">Quick Approval / Push to BH</span>
+          <span className="text-[10px] text-blue-300/80 font-medium">Stage 2 Review ➔ Push to BH</span>
         </div>
 
         {pendingRMTickets.length === 0 ? (

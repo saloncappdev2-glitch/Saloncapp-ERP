@@ -37,7 +37,7 @@ export const StoreManagerView: React.FC<StoreManagerViewProps> = ({
   const targetPct = Math.round((currentRevenue / targetRevenue) * 100);
 
   const activeTickets = scopedTickets;
-  const directTickets = activeTickets.filter(t => t.directToBH);
+  const urgentTickets = activeTickets.filter(t => t.severity === 'high' || t.severity === 'critical');
   const latestBroadcasts = scopedBroadcasts.slice(0, 2);
 
   return (
@@ -59,7 +59,7 @@ export const StoreManagerView: React.FC<StoreManagerViewProps> = ({
         </div>
 
         {/* Minimal metrics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
           {/* Revenue */}
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
             <span className="text-[10px] uppercase font-bold text-neutral-400 flex items-center gap-1">
@@ -131,18 +131,28 @@ export const StoreManagerView: React.FC<StoreManagerViewProps> = ({
           </div>
         </div>
 
-        {/* PROMINENT ISSUE REPORTING BUTTON */}
-        <div className="mt-3 pt-3 border-t border-emerald-500/20">
+        {/* PROMINENT ISSUE REPORTING BUTTON WITH HIERARCHY CYCLE NOTATION */}
+        <div className="mt-3 pt-3 border-t border-emerald-500/20 space-y-2">
           <button
             onClick={onOpenTicketModal}
             className="w-full py-2.5 px-3 rounded-2xl bg-gradient-to-r from-rose-600 via-rose-500 to-amber-600 text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-rose-950/60 active:scale-98 transition-all"
           >
             <Zap className="w-4 h-4 text-amber-300 animate-pulse" />
-            <span>Report / Escalate Issue (With Severity Routing)</span>
+            <span>Raise Escalation (Follows 4-Tier Hierarchy Cycle)</span>
           </button>
-          <p className="text-[10px] text-neutral-400 text-center mt-1.5">
-            High & Critical issues route straight to Business Head & CC your Cluster/Region Managers.
-          </p>
+          
+          <div className="bg-neutral-950/70 rounded-xl p-2 border border-neutral-800/80 text-[10px] text-neutral-400">
+            <div className="flex items-center justify-between text-neutral-300 font-bold mb-1">
+              <span className="flex items-center gap-1 text-amber-400">
+                <span>🔄 Mandatory Cycle Policy:</span>
+              </span>
+              <span className="text-[9px] text-neutral-500 font-mono">No direct BH bypass</span>
+            </div>
+            <p className="leading-snug text-neutral-400">
+              All issues (even High & Critical) must follow the full cycle: 
+              <strong className="text-neutral-200 ml-1">Store ➔ Cluster Mgr (Rajesh V.) ➔ Region Mgr (Vikram S.) ➔ Business Head (Ananya S.)</strong>.
+            </p>
+          </div>
         </div>
       </div>
 

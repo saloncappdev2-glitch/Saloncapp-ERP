@@ -51,26 +51,46 @@ export const MarketingPromosView: React.FC = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-xs">
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
-            <span className="text-[10px] uppercase font-bold text-neutral-400 block">
-              Total Campaign Leads
+            <span className="text-[10px] uppercase font-bold text-emerald-400 block">
+              Campaign Leads
             </span>
-            <div className="text-base font-extrabold text-emerald-400 mt-1">
+            <div className="text-base font-extrabold text-emerald-300 mt-1">
               {marketingStatus.totalCampaignLeads.toLocaleString()} Leads
             </div>
-            <span className="text-[10px] text-neutral-500">Across 18 Salon Outlets</span>
+            <span className="text-[10px] text-neutral-500">Across 18 outlets</span>
           </div>
 
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
-            <span className="text-[10px] uppercase font-bold text-neutral-400 block">
+            <span className="text-[10px] uppercase font-bold text-amber-400 block">
               Google CSAT Rating
             </span>
             <div className="text-base font-extrabold text-amber-300 mt-1 flex items-center gap-1">
-              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+              <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
               <span>{marketingStatus.averageCsatRating} / 5.0</span>
             </div>
-            <span className="text-[10px] text-neutral-500">12,400+ Client Reviews</span>
+            <span className="text-[10px] text-neutral-500">12,400+ reviews</span>
+          </div>
+
+          <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
+            <span className="text-[10px] uppercase font-bold text-rose-400 block">
+              Active Promos
+            </span>
+            <div className="text-base font-extrabold text-rose-300 mt-1">
+              {marketingStatus.activeCampaignsCount} Live
+            </div>
+            <span className="text-[10px] text-neutral-500">Discount coupons running</span>
+          </div>
+
+          <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
+            <span className="text-[10px] uppercase font-bold text-purple-400 block">
+              Footfall Lift
+            </span>
+            <div className="text-base font-extrabold text-purple-300 mt-1">
+              +{marketingStatus.brandFootfallBoostPct}%
+            </div>
+            <span className="text-[10px] text-neutral-500">Walk-in conversion rate</span>
           </div>
         </div>
       </div>

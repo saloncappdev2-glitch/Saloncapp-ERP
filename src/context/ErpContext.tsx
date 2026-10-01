@@ -359,27 +359,26 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       description: data.description,
       category: data.category,
       severity: data.severity,
-      status: isHighOrCritical ? 'pending_bh' : 'pending_cluster',
+      // Strict hierarchy cycle: all tickets start at Cluster Manager level
+      status: 'pending_cluster',
       storeId: store.id,
       clusterId: store.clusterId,
       regionId: store.regionId,
       raisedByName: currentUser.name,
       raisedByRole: currentRole,
-      directToBH: isHighOrCritical,
-      ccNotifiedRoles: isHighOrCritical ? ['cluster_manager', 'region_manager'] : [],
+      directToBH: false,
+      ccNotifiedRoles: isHighOrCritical ? ['region_manager', 'business_head'] : [],
       createdAt: now,
       updatedAt: now,
       timeline: [
         {
           id: `tl_${Date.now()}`,
-          action: isHighOrCritical
-            ? `Direct High/Critical Escalation to Business Head`
-            : `Ticket Raised to Cluster Manager`,
+          action: `Ticket Raised to Cluster Manager (${data.severity.toUpperCase()} Priority)`,
           performedByName: `${currentUser.name} (${currentUser.title})`,
           performedByRole: currentRole,
           note: isHighOrCritical
-            ? `[SEVERITY RULE TRIGGERED] Severity is "${data.severity.toUpperCase()}". Direct route to Business Head enabled. Auto-notified Cluster Manager Rajesh V. and Region Manager Vikram S.`
-            : `Standard issue logged for cluster review.`,
+            ? `[HIERARCHY CYCLE] Severity is "${data.severity.toUpperCase()}". Dispatched to Cluster Manager (Stage 1). Will proceed to Region Manager ➔ Business Head if unresolved.`
+            : `Standard issue logged for cluster review (Stage 1 of Hierarchy Cycle).`,
           timestamp: now,
         },
       ],
@@ -390,37 +389,29 @@ export const ErpProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     // Create system notification
     const newNotifications: SystemNotification[] = [];
 
+    // All tickets notify Cluster Manager first as primary handler
+    newNotifications.push({
+      id: `notif_${Date.now()}_cm`,
+      recipientRoles: ['cluster_manager'],
+      targetScope: { regionId: store.regionId, clusterId: store.clusterId, storeId: store.id },
+      title: isHighOrCritical
+        ? `🚨 ${data.severity.toUpperCase()} Priority Ticket: ${data.title}`
+        : `📋 New Store Ticket: ${data.title}`,
+      message: `${store.name} submitted ${data.severity.toUpperCase()} ticket ${ticketNumber}. Review required in Cluster queue before escalating to Region Manager.`,
+      type: 'ticket_created',
+      relatedTicketId: newTicket.id,
+      timestamp: now,
+      isRead: false,
+    });
+
+    // If High or Critical, send advisory awareness to Region & BH, but action remains with Cluster Manager
     if (isHighOrCritical) {
       newNotifications.push({
-        id: `notif_${Date.now()}_bh`,
-        recipientRoles: ['business_head'],
+        id: `notif_${Date.now()}_sla_cc`,
+        recipientRoles: ['region_manager', 'business_head'],
         targetScope: { regionId: store.regionId, clusterId: store.clusterId, storeId: store.id },
-        title: `🚨 ${data.severity.toUpperCase()} Escalation Direct from ${store.name}`,
-        message: `${currentUser.name} raised ticket ${ticketNumber}: "${data.title}". Immediate BH review requested.`,
-        type: 'ticket_created',
-        relatedTicketId: newTicket.id,
-        timestamp: now,
-        isRead: false,
-      });
-
-      newNotifications.push({
-        id: `notif_${Date.now()}_cc`,
-        recipientRoles: ['cluster_manager', 'region_manager'],
-        targetScope: { regionId: store.regionId, clusterId: store.clusterId, storeId: store.id },
-        title: `⚠️ CC Notice: Direct Escalation to BH from ${store.name}`,
-        message: `High/Critical ticket ${ticketNumber} ("${data.title}") was sent straight to Business Head by ${store.name}. You are CC'd.`,
-        type: 'ticket_created',
-        relatedTicketId: newTicket.id,
-        timestamp: now,
-        isRead: false,
-      });
-    } else {
-      newNotifications.push({
-        id: `notif_${Date.now()}_cm`,
-        recipientRoles: ['cluster_manager'],
-        targetScope: { regionId: store.regionId, clusterId: store.clusterId, storeId: store.id },
-        title: `📋 New Store Ticket: ${data.title}`,
-        message: `${store.name} submitted ${data.severity.toUpperCase()} priority ticket ${ticketNumber} for cluster review.`,
+        title: `ℹ️ Cycle SLA Alert: ${data.severity.toUpperCase()} Ticket at ${store.name}`,
+        message: `${data.severity.toUpperCase()} ticket ${ticketNumber} logged. Currently at Stage 1 (Cluster Manager review) following standard hierarchy cycle.`,
         type: 'ticket_created',
         relatedTicketId: newTicket.id,
         timestamp: now,

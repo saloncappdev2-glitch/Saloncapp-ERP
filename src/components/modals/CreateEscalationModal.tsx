@@ -58,9 +58,7 @@ export const CreateEscalationModal: React.FC<CreateEscalationModalProps> = ({
     });
 
     setFeedback(
-      isHighOrCritical
-        ? `⚡ Direct Escalation dispatched to Business Head! Cluster & Region Managers CC'd.`
-        : `Ticket dispatched to Cluster Manager for standard review.`
+      `Ticket logged with ${severity.toUpperCase()} priority! Dispatched to Cluster Manager (Stage 1 of Hierarchy Cycle).`
     );
 
     setTimeout(() => {
@@ -129,27 +127,35 @@ export const CreateEscalationModal: React.FC<CreateEscalationModalProps> = ({
             <div
               className={`mt-2.5 p-3 rounded-2xl border transition-all text-xs ${
                 isHighOrCritical
-                  ? 'bg-gradient-to-r from-rose-950/50 to-amber-950/30 border-rose-500/40 text-rose-200'
+                  ? 'bg-gradient-to-r from-rose-950/60 via-amber-950/40 to-neutral-900 border-rose-500/50 text-rose-200 shadow-md shadow-rose-950/40'
                   : 'bg-blue-950/30 border-blue-500/30 text-blue-200'
               }`}
             >
-              <div className="flex items-start gap-2">
+              <div className="flex items-start gap-2.5">
                 {isHighOrCritical ? (
                   <Zap className="w-4 h-4 text-amber-400 shrink-0 mt-0.5 animate-pulse" />
                 ) : (
                   <ShieldCheck className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
                 )}
-                <div>
-                  <div className="font-bold flex items-center gap-1.5">
+                <div className="space-y-1">
+                  <div className="font-extrabold flex items-center gap-1.5 uppercase text-white tracking-wide">
                     {isHighOrCritical
-                      ? 'DIRECT ESCALATION TO BUSINESS HEAD'
-                      : 'STANDARD HIERARCHY ROUTING'}
+                      ? 'Strict Hierarchy Cycle Enforced (High/Critical)'
+                      : 'Hierarchy Cycle: Standard Review (Stage 1: Cluster)'}
                   </div>
-                  <p className="text-[11px] opacity-90 mt-0.5 leading-snug">
-                    {isHighOrCritical
-                      ? 'Because severity is High/Critical, this ticket bypasses standard queue directly to Business Head Ananya Sharma. Cluster Manager (Rajesh V.) & Region Manager (Vikram S.) are auto-notified & CC’d.'
-                      : 'Low/Medium issues route directly to your Cluster Manager (Rajesh Verma) for localized review and resolution.'}
+                  <p className="text-[11px] text-neutral-300 leading-snug">
+                    All issues follow the mandatory 4-tier chain of command:
+                    <strong className="text-amber-300 ml-1">
+                      Store ➔ Cluster Mgr ➔ Region Mgr ➔ Business Head
+                    </strong>
+                    . Direct escalation to Business Head is not permitted—even for High/Critical severities, your ticket is dispatched to your Cluster Manager (Rajesh Verma) for Stage 1 initial triage.
                   </p>
+                  {isHighOrCritical && (
+                    <div className="flex items-center gap-1.5 pt-1 text-[10px] text-amber-300/90 font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+                      <span>Region & Business Head receive automated SLA CC alerts while Cluster acts.</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -204,29 +210,34 @@ export const CreateEscalationModal: React.FC<CreateEscalationModalProps> = ({
           </div>
 
           {/* Notification Recipient Preview */}
-          <div className="bg-neutral-950/80 rounded-xl p-2.5 border border-neutral-800/80 text-[11px] text-neutral-400">
-            <span className="font-semibold text-neutral-300 block mb-1">
-              Automated Notification Matrix:
-            </span>
+          <div className="bg-neutral-950/80 rounded-2xl p-3 border border-neutral-800/80 text-[11px] text-neutral-400 space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-neutral-300">
+                Automated Cycle Notification Matrix:
+              </span>
+              <span className="text-[10px] text-amber-400 font-mono font-semibold">Stage 1 Routing</span>
+            </div>
             <div className="flex flex-wrap items-center gap-1.5">
+              <span className="px-2 py-0.5 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                Primary Action: Cluster Manager (Rajesh Verma)
+              </span>
               {isHighOrCritical ? (
                 <>
-                  <span className="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">
-                    Primary: Business Head
+                  <span className="px-2 py-0.5 rounded-lg bg-blue-500/20 text-blue-300 border border-blue-500/30 font-medium">
+                    CC SLA: Region Mgr
                   </span>
-                  <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30 font-medium">
-                    CC: Region Mgr
-                  </span>
-                  <span className="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-medium">
-                    CC: Cluster Mgr
+                  <span className="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 font-medium">
+                    CC SLA: Business Head
                   </span>
                 </>
-              ) : (
-                <span className="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">
-                  Primary: Cluster Manager (Rajesh Verma)
-                </span>
-              )}
+              ) : null}
             </div>
+            <p className="text-[10px] text-neutral-500 italic pt-0.5">
+              {isHighOrCritical
+                ? 'Action authority remains with Cluster Manager (Stage 1). Senior management receives automated CC alerts for visibility only.'
+                : 'Ticket routes directly to Cluster Manager queue for inspection and operational support.'}
+            </p>
           </div>
 
           {/* Feedback banner */}
@@ -248,14 +259,14 @@ export const CreateEscalationModal: React.FC<CreateEscalationModalProps> = ({
             }`}
           >
             {isSubmitting ? (
-              <span>Dispatching Notification...</span>
+              <span>Dispatching to Cluster Queue...</span>
             ) : (
               <>
                 <Send className="w-4 h-4" />
                 <span>
                   {isHighOrCritical
-                    ? 'Escalate Directly to Business Head'
-                    : 'Submit to Cluster Manager'}
+                    ? 'Submit High/Critical to Cluster Queue (Stage 1 Cycle)'
+                    : 'Submit to Cluster Manager (Stage 1 Cycle)'}
                 </span>
               </>
             )}

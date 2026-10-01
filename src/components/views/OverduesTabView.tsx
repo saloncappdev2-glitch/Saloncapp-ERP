@@ -37,10 +37,10 @@ export const OverduesTabView: React.FC = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
-            <span className="text-[10px] uppercase font-bold text-neutral-400 block">
-              Total Royalty Overdue
+            <span className="text-[10px] uppercase font-bold text-amber-400 block">
+              Royalty Overdue
             </span>
             <div className="text-base font-extrabold text-amber-300 mt-1">
               {formatCurrency(totalRoyalty)}
@@ -50,12 +50,32 @@ export const OverduesTabView: React.FC = () => {
 
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
             <span className="text-[10px] uppercase font-bold text-neutral-400 block">
-              Total Collateral Overdue
+              Collateral Dues
             </span>
             <div className="text-base font-extrabold text-neutral-200 mt-1">
               {formatCurrency(totalCollateral)}
             </div>
             <span className="text-[10px] text-neutral-500">Asset security guarantee</span>
+          </div>
+
+          <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
+            <span className="text-[10px] uppercase font-bold text-rose-400 block">
+              Delinquent Stores
+            </span>
+            <div className="text-base font-extrabold text-rose-300 mt-1">
+              {storesWithOverdue.length} Outlets
+            </div>
+            <span className="text-[10px] text-neutral-500">Unsettled accounts</span>
+          </div>
+
+          <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
+            <span className="text-[10px] uppercase font-bold text-purple-400 block">
+              Critical &gt;30 Days
+            </span>
+            <div className="text-base font-extrabold text-purple-300 mt-1">
+              {storesWithOverdue.filter(s => s.royaltyDaysOverdue > 30 || s.collateralDaysOverdue > 30).length} Outlets
+            </div>
+            <span className="text-[10px] text-neutral-500">Legal escalation threshold</span>
           </div>
         </div>
       </div>

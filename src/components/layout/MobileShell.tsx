@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useErp } from '../../context/ErpContext';
 import { Header } from '../common/Header';
+import { SidebarNav } from '../common/SidebarNav';
 import { RoleSwitcherBar } from '../common/RoleSwitcherBar';
 import { BottomNav } from '../common/BottomNav';
 import { BusinessHeadView } from '../views/BusinessHeadView';
@@ -156,17 +157,26 @@ export const MobileShell: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-neutral-950 text-neutral-100 flex flex-col ${
+    <div className={`min-h-screen bg-neutral-950 text-neutral-100 flex ${
       mobileDeviceFrame
-        ? 'items-center justify-center p-2 sm:p-4 md:p-6 bg-neutral-900/60'
-        : 'w-full'
+        ? 'items-center justify-center p-2 sm:p-4 md:p-6 bg-neutral-900/60 flex-col'
+        : 'w-full flex-row'
     }`}>
-      {/* Mobile Device Frame or Responsive Container */}
+      {/* Desktop Sidebar Navigation (active on md+ when not in phone simulator frame) */}
+      {!mobileDeviceFrame && (
+        <SidebarNav
+          onOpenNotifications={() => setIsNotificationsOpen(true)}
+          onOpenBroadcastModal={() => setIsBroadcastModalOpen(true)}
+          onOpenTicketModal={() => setIsEscalateModalOpen(true)}
+        />
+      )}
+
+      {/* Mobile Device Frame or Responsive Desktop Main Container */}
       <div
         className={`w-full bg-neutral-950 flex flex-col transition-all ${
           mobileDeviceFrame
             ? 'max-w-[420px] h-[92vh] max-h-[890px] rounded-[48px] border-[10px] border-neutral-800 shadow-2xl ring-1 ring-white/10 relative overflow-hidden'
-            : 'w-full min-h-screen relative'
+            : 'flex-1 min-w-0 min-h-screen relative'
         }`}
       >
         {/* iOS / Phone Status Bar (when frame is active) */}

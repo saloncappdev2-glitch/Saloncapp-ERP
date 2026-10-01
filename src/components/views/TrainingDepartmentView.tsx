@@ -52,7 +52,7 @@ export const TrainingDepartmentView: React.FC<TrainingDepartmentViewProps> = ({
         </div>
 
         {/* Training KPI Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
           {/* Certified Stylists */}
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
             <span className="text-[10px] uppercase font-bold text-amber-400 flex items-center gap-1">

@@ -19,7 +19,7 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
   onOpenTicketModal,
 }) => {
   const { scopedTickets, currentRole } = useErp();
-  const [filter, setFilter] = useState<'all' | 'pending' | 'direct' | 'resolved'>('all');
+  const [filter, setFilter] = useState<'all' | 'pending' | 'urgent' | 'resolved'>('all');
 
   const filteredTickets = scopedTickets.filter(t => {
     if (filter === 'pending') {
@@ -29,7 +29,7 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
         t.status === 'pending_cluster'
       );
     }
-    if (filter === 'direct') return t.directToBH;
+    if (filter === 'urgent') return t.severity === 'high' || t.severity === 'critical';
     if (filter === 'resolved') return t.status === 'approved' || t.status === 'resolved' || t.status === 'rejected';
     return true;
   });
@@ -41,7 +41,9 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
       t.status === 'pending_cluster'
   ).length;
 
-  const directCount = scopedTickets.filter(t => t.directToBH).length;
+  const urgentCount = scopedTickets.filter(
+    t => t.severity === 'high' || t.severity === 'critical'
+  ).length;
 
   const getDeskInfo = () => {
     switch (currentRole) {
@@ -68,22 +70,22 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
       case 'business_head':
         return {
           title: 'Executive Escalation Desk',
-          subtitle: 'Executive approvals & high-priority network interventions',
+          subtitle: 'Final stage of hierarchy cycle: approvals for escalations forwarded from Region Managers',
         };
       case 'region_manager':
         return {
           title: 'Regional Escalation Desk',
-          subtitle: 'Regional reviews & cluster dispute triage',
+          subtitle: 'Stage 2 review of cluster escalations & authorization to escalate to Business Head',
         };
       case 'cluster_manager':
         return {
           title: 'Cluster Escalation Desk',
-          subtitle: 'Cluster store reviews & operational support',
+          subtitle: 'Stage 1 triage for store escalations (all severities, including High & Critical)',
         };
       default:
         return {
           title: 'Store Escalation Desk',
-          subtitle: 'Logged salon issues & management resolution timeline',
+          subtitle: 'Store issues adhering to mandatory 4-tier hierarchy cycle: Store ➔ Cluster ➔ Region ➔ BH',
         };
     }
   };
@@ -115,6 +117,22 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
         )}
       </div>
 
+      {/* Cycle Compliance Banner */}
+      <div className="bg-neutral-900/90 rounded-2xl border border-neutral-800 p-2.5 flex items-center justify-between gap-2 text-xs">
+        <div className="flex items-center gap-2">
+          <span className="p-1 rounded-lg bg-amber-500/20 text-amber-300 font-bold text-[11px] shrink-0">
+            🔄 Hierarchy Cycle Policy
+          </span>
+          <span className="text-[11px] text-neutral-300 hidden sm:inline">
+            All issues (including High & Critical) must follow:
+          </span>
+          <span className="text-[11px] font-mono text-amber-300 font-bold">
+            Store ➔ 1. Cluster ➔ 2. Region ➔ 3. BH
+          </span>
+        </div>
+        <span className="text-[10px] text-neutral-500 font-mono shrink-0">No Direct Bypass</span>
+      </div>
+
       {/* Filter Chips */}
       <ScrollableChipBar>
         <button
@@ -140,14 +158,14 @@ export const EscalationsTabView: React.FC<EscalationsTabViewProps> = ({
         </button>
 
         <button
-          onClick={() => setFilter('direct')}
+          onClick={() => setFilter('urgent')}
           className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border shrink-0 transition-all ${
-            filter === 'direct'
+            filter === 'urgent'
               ? 'bg-rose-500 text-white border-rose-400'
               : 'bg-neutral-900 border-neutral-800 text-neutral-400'
           }`}
         >
-          ⚡ Direct to BH ({directCount})
+          ⚡ High / Critical ({urgentCount})
         </button>
 
         <button

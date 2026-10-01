@@ -40,32 +40,69 @@ export const EscalationCard: React.FC<EscalationCardProps> = ({
 
   // Can this role take action on this ticket?
   const canBusinessHeadAct = currentRole === 'business_head' && ticket.status === 'pending_bh';
-  const canRegionAct = currentRole === 'region_manager' && (ticket.status === 'pending_region' || (ticket.directToBH && ticket.status === 'pending_bh'));
+  const canRegionAct = currentRole === 'region_manager' && ticket.status === 'pending_region';
   const canClusterAct = currentRole === 'cluster_manager' && ticket.status === 'pending_cluster';
 
-  const isDirectBHEscalation = ticket.directToBH;
+  const isUrgent = ticket.severity === 'critical' || ticket.severity === 'high';
 
   return (
     <div
       className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
-        isDirectBHEscalation && (ticket.severity === 'critical' || ticket.severity === 'high')
+        isUrgent && (ticket.status === 'pending_cluster' || ticket.status === 'pending_region' || ticket.status === 'pending_bh')
           ? 'bg-gradient-to-b from-neutral-900 via-neutral-900 to-rose-950/20 border-rose-500/40 shadow-md shadow-rose-950/30'
           : 'bg-neutral-900/90 border-neutral-800'
       }`}
     >
-      {/* Top Banner for Direct Escalations with CC Notification Info */}
-      {isDirectBHEscalation && (
-        <div className="bg-rose-500/15 border-b border-rose-500/30 px-3.5 py-1.5 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 text-[11px] font-bold text-rose-300">
-            <Sparkles className="w-3.5 h-3.5 text-rose-400 animate-pulse" />
-            <span>Direct to Business Head</span>
-            <span className="text-[10px] font-normal text-rose-300/80">({ticket.severity.toUpperCase()} Priority)</span>
-          </div>
-          <span className="text-[9px] px-1.5 py-0.5 rounded bg-rose-500/30 text-rose-200 border border-rose-500/40 font-semibold">
-            Cluster & Region CC'd
+      {/* Hierarchy Cycle Progress Track */}
+      <div className="bg-neutral-950/80 border-b border-neutral-800/80 px-3.5 py-1.5 flex items-center justify-between gap-2 text-[10px]">
+        <div className="flex items-center gap-1.5 font-mono overflow-x-auto">
+          <span className="text-neutral-500 font-bold shrink-0">CYCLE:</span>
+          <span className="text-neutral-400 font-medium shrink-0">Store</span>
+          <span className="text-neutral-600 shrink-0">➔</span>
+          <span
+            className={`px-1.5 py-0.5 rounded font-bold shrink-0 ${
+              ticket.status === 'pending_cluster'
+                ? 'bg-purple-500/25 text-purple-200 border border-purple-500/50'
+                : ticket.status === 'pending_region' || ticket.status === 'pending_bh' || ticket.status === 'approved' || ticket.status === 'resolved'
+                ? 'text-emerald-400 font-medium'
+                : 'text-neutral-500'
+            }`}
+          >
+            1. Cluster {ticket.status === 'pending_region' || ticket.status === 'pending_bh' || ticket.status === 'approved' || ticket.status === 'resolved' ? '✓' : ''}
+          </span>
+          <span className="text-neutral-600 shrink-0">➔</span>
+          <span
+            className={`px-1.5 py-0.5 rounded font-bold shrink-0 ${
+              ticket.status === 'pending_region'
+                ? 'bg-blue-500/25 text-blue-200 border border-blue-500/50'
+                : ticket.status === 'pending_bh' || ticket.status === 'approved' || ticket.status === 'resolved'
+                ? 'text-emerald-400 font-medium'
+                : 'text-neutral-500'
+            }`}
+          >
+            2. Region {ticket.status === 'pending_bh' || ticket.status === 'approved' || ticket.status === 'resolved' ? '✓' : ''}
+          </span>
+          <span className="text-neutral-600 shrink-0">➔</span>
+          <span
+            className={`px-1.5 py-0.5 rounded font-bold shrink-0 ${
+              ticket.status === 'pending_bh'
+                ? 'bg-amber-500/25 text-amber-200 border border-amber-500/50'
+                : ticket.status === 'approved' || ticket.status === 'resolved'
+                ? 'text-emerald-400 font-medium'
+                : 'text-neutral-500'
+            }`}
+          >
+            3. Business Head {ticket.status === 'approved' || ticket.status === 'resolved' ? '✓' : ''}
           </span>
         </div>
-      )}
+
+        {isUrgent && (
+          <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 font-extrabold uppercase text-[9px] flex items-center gap-1 shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse"></span>
+            Cycle Enforced • {ticket.severity}
+          </span>
+        )}
+      </div>
 
       <div className="p-3.5">
         {/* Header row: Ticket number, time, severity & status */}

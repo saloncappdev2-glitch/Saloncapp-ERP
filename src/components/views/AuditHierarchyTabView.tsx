@@ -190,7 +190,7 @@ export const AuditHierarchyTabView: React.FC = () => {
               <span className="text-[10px] font-mono opacity-80">Vikram S.</span>
             </div>
             <p className="text-[11px] opacity-90 leading-tight">
-              Supervises clusters, reviews regional overdue recovery, and reviews store escalations.
+              Stage 2 of Hierarchy Cycle: Supervises clusters, reviews regional overdue recovery, and evaluates store escalations forwarded from Cluster Managers before pushing to Business Head.
             </p>
           </div>
 
@@ -212,7 +212,7 @@ export const AuditHierarchyTabView: React.FC = () => {
               <span className="text-[10px] font-mono opacity-80">Rajesh V.</span>
             </div>
             <p className="text-[11px] opacity-90 leading-tight">
-              Monitors store targets, chairs, and local complaints. Resolves store requests or escalates to Region.
+              Stage 1 of Hierarchy Cycle: Primary handler for all store issues (including High & Critical priority). Resolves operational issues or escalates upward to Region Manager.
             </p>
           </div>
 
@@ -234,7 +234,7 @@ export const AuditHierarchyTabView: React.FC = () => {
               <span className="text-[10px] font-mono opacity-80">Pooja N.</span>
             </div>
             <p className="text-[11px] opacity-90 leading-tight">
-              Daily revenue, royalty status, receiving broadcasts. High/Critical issues route directly to Business Head and CC Cluster & Region!
+              Daily revenue, royalty status, receiving broadcasts. All issues (including High & Critical) follow the strict hierarchy cycle: Store Manager ➔ Cluster Manager ➔ Region Manager ➔ Business Head.
             </p>
           </div>
         </div>

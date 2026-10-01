@@ -50,25 +50,45 @@ export const TrainingWorkshopsView: React.FC = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-xs">
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
-            <span className="text-[10px] uppercase font-bold text-neutral-400 block">
+            <span className="text-[10px] uppercase font-bold text-amber-400 block">
               Certified Stylists
             </span>
-            <div className="text-base font-extrabold text-purple-300 mt-1">
+            <div className="text-base font-extrabold text-amber-300 mt-1">
               {trainingStatus.certifiedStylistsRatio}%
             </div>
-            <span className="text-[10px] text-neutral-500">215 Certified Master Colorists</span>
+            <span className="text-[10px] text-neutral-500">Master colorists</span>
           </div>
 
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
-            <span className="text-[10px] uppercase font-bold text-neutral-400 block">
-              Hygiene SOP Compliance
+            <span className="text-[10px] uppercase font-bold text-emerald-400 block">
+              Hygiene Compliance
             </span>
             <div className="text-base font-extrabold text-emerald-400 mt-1">
               {trainingStatus.hygieneSopCompliance}%
             </div>
             <span className="text-[10px] text-neutral-500">ISO-45001 checklist verified</span>
+          </div>
+
+          <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
+            <span className="text-[10px] uppercase font-bold text-purple-400 block">
+              Workshops Scheduled
+            </span>
+            <div className="text-base font-extrabold text-purple-300 mt-1">
+              {trainingStatus.upcomingWorkshops.length} Sessions
+            </div>
+            <span className="text-[10px] text-neutral-500">Upcoming calendar</span>
+          </div>
+
+          <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
+            <span className="text-[10px] uppercase font-bold text-blue-400 block">
+              Network Audit Score
+            </span>
+            <div className="text-base font-extrabold text-blue-300 mt-1">
+              {trainingStatus.networkAuditScore}%
+            </div>
+            <span className="text-[10px] text-neutral-500">Quarterly quality audit</span>
           </div>
         </div>
       </div>

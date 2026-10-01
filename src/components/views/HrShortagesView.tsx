@@ -38,7 +38,17 @@ export const HrShortagesView: React.FC = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-xs">
+          <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
+            <span className="text-[10px] uppercase font-bold text-rose-400 block">
+              Open Vacancies
+            </span>
+            <div className="text-base font-extrabold text-rose-300 mt-1">
+              {hrStatus.openStylistVacancies} Roles
+            </div>
+            <span className="text-[10px] text-neutral-500">Urgent salon staffing</span>
+          </div>
+
           <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
             <span className="text-[10px] uppercase font-bold text-neutral-400 block">
               Network Attendance
@@ -57,6 +67,16 @@ export const HrShortagesView: React.FC = () => {
               {hrStatus.monthlyAttritionPct}% Rate
             </div>
             <span className="text-[10px] text-neutral-500">Benchmark: &lt;5.0%</span>
+          </div>
+
+          <div className="bg-neutral-950/80 p-3 rounded-2xl border border-neutral-800/80">
+            <span className="text-[10px] uppercase font-bold text-amber-400 block">
+              Pending Transfers
+            </span>
+            <div className="text-base font-extrabold text-amber-300 mt-1">
+              {hrStatus.pendingTransfersCount} Requests
+            </div>
+            <span className="text-[10px] text-neutral-500">Awaiting cluster match</span>
           </div>
         </div>
       </div>

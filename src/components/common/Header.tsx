@@ -212,63 +212,71 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800/80 sticky top-0 z-20 transition-all">
       <div className={`flex items-center justify-between gap-3 ${
-        mobileDeviceFrame ? 'px-4 py-2.5' : 'px-4 sm:px-6 lg:px-8 py-3 max-w-7xl mx-auto w-full'
+        mobileDeviceFrame ? 'px-4 py-2.5' : 'px-4 sm:px-6 lg:px-8 py-3 w-full'
       }`}>
-        {/* Brand & Context */}
+        {/* Left Section: Mobile Brand OR Desktop View Title */}
         <div className="flex items-center gap-3 shrink-0">
-          <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-500 to-amber-300 p-0.5 shadow-md shadow-amber-500/10 flex items-center justify-center">
-            <div className="w-full h-full bg-neutral-950 rounded-[14px] flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-amber-400" />
+          {/* Shown on mobile or in phone simulator frame */}
+          {(mobileDeviceFrame) ? (
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-500 to-amber-300 p-0.5 shadow-md shadow-amber-500/10 flex items-center justify-center">
+                <div className="w-full h-full bg-neutral-950 rounded-[14px] flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <h1 className="font-black text-sm sm:text-base tracking-tight text-white">saloncapp</h1>
+                  <span className="text-[10px] font-black uppercase px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    ERP
+                  </span>
+                </div>
+                <p className="text-[11px] text-neutral-400 truncate max-w-[140px]">
+                  {currentUser.title}
+                </p>
+              </div>
             </div>
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <h1 className="font-black text-sm sm:text-base tracking-tight text-white">saloncapp</h1>
-              <span className="text-[10px] font-black uppercase px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                ERP
-              </span>
-            </div>
-            <p className="text-[11px] text-neutral-400 truncate max-w-[140px] sm:max-w-none">
-              {currentUser.title}
-            </p>
-          </div>
+          ) : (
+            <>
+              {/* Mobile screen brand when not in simulator frame */}
+              <div className="flex md:hidden items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-500 p-0.5 flex items-center justify-center">
+                  <div className="w-full h-full bg-neutral-950 rounded-[10px] flex items-center justify-center">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center gap-1">
+                    <span className="font-black text-sm text-white">saloncapp</span>
+                    <span className="text-[9px] font-black uppercase px-1 rounded bg-amber-500/20 text-amber-300">ERP</span>
+                  </div>
+                  <span className="text-[10px] text-neutral-400 block truncate max-w-[130px]">{currentUser.title}</span>
+                </div>
+              </div>
+
+              {/* Desktop breadcrumb / header context when sidebar is active */}
+              <div className="hidden md:flex items-center gap-2 text-xs">
+                <span className="font-semibold text-neutral-400">Portal</span>
+                <span className="text-neutral-600">/</span>
+                <span className="font-bold text-white uppercase tracking-wider text-[11px] px-2 py-0.5 rounded-lg bg-neutral-900 border border-neutral-800">
+                  {currentUser.title}
+                </span>
+                <span className="text-neutral-600">/</span>
+                <span className="text-amber-400 font-extrabold capitalize text-xs">
+                  {activeTab === 'overview'
+                    ? 'Dashboard & Operations'
+                    : activeTab === 'overdues'
+                    ? 'Overdues & Compliance'
+                    : activeTab === 'escalations'
+                    ? 'Hierarchy Escalations'
+                    : activeTab === 'broadcasts'
+                    ? 'Circulars & Directives'
+                    : 'Franchise Hierarchy'}
+                </span>
+              </div>
+            </>
+          )}
         </div>
-
-        {/* Desktop Web Navigation Tabs (hidden when inside phone frame or on mobile screens) */}
-        {!mobileDeviceFrame && (
-          <nav className="hidden md:flex items-center gap-1 bg-neutral-900/80 p-1 rounded-2xl border border-neutral-800/90 shadow-inner">
-            {navItems.map(item => {
-              const isActive = activeTab === item.id;
-              const Icon = item.icon;
-
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all relative ${
-                    isActive
-                      ? 'bg-amber-500 text-neutral-950 shadow-sm'
-                      : 'text-neutral-400 hover:text-white hover:bg-neutral-850'
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  <span>{item.label}</span>
-                  {item.badge !== undefined && item.badge > 0 && (
-                    <span
-                      className={`text-[9px] font-extrabold px-1.5 py-0.2 rounded-full ${
-                        isActive
-                          ? 'bg-neutral-950 text-amber-300'
-                          : 'bg-rose-500 text-white'
-                      }`}
-                    >
-                      {item.badge}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </nav>
-        )}
 
         {/* Right Actions & Utilities */}
         <div className="flex items-center gap-2 shrink-0">
@@ -283,7 +291,7 @@ export const Header: React.FC<HeaderProps> = ({
                 ? 'bg-amber-500/15 border-amber-500/40 text-amber-300 shadow-sm'
                 : 'bg-neutral-900 border-neutral-800 text-neutral-300 hover:text-white hover:border-neutral-700'
             }`}
-            title={mobileDeviceFrame ? 'Switch to Full Web Responsive View' : 'Switch to iPhone Frame Simulator'}
+            title={mobileDeviceFrame ? 'Switch to Full Web Responsive View with Sidebar' : 'Switch to Phone Frame Simulator'}
           >
             {mobileDeviceFrame ? (
               <>
@@ -298,22 +306,24 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </button>
 
-          {/* User Avatar & Department Badge (Desktop) */}
-          <div className="hidden lg:flex items-center gap-2 pl-1 border-l border-neutral-800">
-            <img
-              src={currentUser.avatar}
-              alt={currentUser.name}
-              className="w-7 h-7 rounded-xl object-cover border border-neutral-700"
-            />
-            <div className="text-left">
-              <span className="text-[11px] font-bold text-neutral-200 block leading-tight">
-                {currentUser.name}
-              </span>
-              <span className="text-[9px] text-neutral-400 font-mono block">
-                {currentUser.department || 'Executive'}
-              </span>
+          {/* User Avatar (Desktop) */}
+          {!mobileDeviceFrame && (
+            <div className="hidden lg:flex items-center gap-2 pl-2 border-l border-neutral-800">
+              <img
+                src={currentUser.avatar}
+                alt={currentUser.name}
+                className="w-7 h-7 rounded-xl object-cover border border-neutral-700"
+              />
+              <div className="text-left">
+                <span className="text-[11px] font-bold text-neutral-200 block leading-tight">
+                  {currentUser.name}
+                </span>
+                <span className="text-[9px] text-neutral-400 font-mono block">
+                  {currentUser.department || 'HQ'}
+                </span>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Notifications Bell */}
           <button
